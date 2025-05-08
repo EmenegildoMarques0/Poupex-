@@ -4,15 +4,9 @@ class ExpenseManager {
         this.expenses = JSON.parse(localStorage.getItem('expenses')) || [];
         this.categories = ['Alimentação', 'Transporte', 'Lazer', 'Moradia', 'Saúde', 'Outros'];
         this.charts = {};
-        this.init();
-    }
-
-    init() {
         this.setupEventListeners();
         this.updateAll();
-        this.updateCategoryFilter();
-        this.setupDarkMode();
-        this.showSection('dashboard');
+        this.initializeCharts();
     }
 
     setupEventListeners() {
@@ -41,6 +35,12 @@ class ExpenseManager {
 
         // Dark mode
         document.getElementById('darkModeToggle').addEventListener('click', () => this.toggleDarkMode());
+
+        // Inicializa os gráficos quando a página carregar
+        window.addEventListener('load', () => {
+            this.updateAll();
+            this.initializeCharts();
+        });
 
         // Limpar dados
         document.getElementById('clearAll').addEventListener('click', () => {
@@ -264,8 +264,10 @@ class ExpenseManager {
 
     updateStatistics() {
         const now = new Date();
-        const weekStart = new Date(now);
-        weekStart.setDate(now.getDate() - now.getDay());
+        // Calcula a data de 7 dias atrás
+        const sevenDaysAgo = new Date(now);
+        sevenDaysAgo.setDate(now.getDate() - 7);
+        
         const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
         const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
         const thirtyDaysAgo = new Date(now);
@@ -273,7 +275,7 @@ class ExpenseManager {
 
         // Totais básicos
         const weekTotal = this.expenses
-            .filter(expense => new Date(expense.date) >= weekStart)
+            .filter(expense => new Date(expense.date) >= sevenDaysAgo)
             .reduce((sum, expense) => sum + expense.amount, 0);
 
         const monthTotal = this.expenses
@@ -619,7 +621,106 @@ class ExpenseManager {
             currency: 'AOA'
         }).format(amount);
     }
+
+    initializeCharts() {
+        // Inicializa os gráficos com dados vazios
+        this.categoryChart = new Chart(document.getElementById('categoryChart'), {
+            type: 'doughnut',
+            data: {
+                labels: [],
+                datasets: [{
+                    data: [],
+                    backgroundColor: [
+                        '#0d6efd',
+                        '#198754',
+                        '#ffc107',
+                        '#dc3545',
+                        '#0dcaf0',
+                        '#6c757d'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        this.dailyChart = new Chart(document.getElementById('dailyChart'), {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Gastos Diários',
+                    data: [],
+                    borderColor: '#0d6efd',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        this.monthlyChart = new Chart(document.getElementById('monthlyChart'), {
+            type: 'bar',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Gastos Mensais',
+                    data: [],
+                    backgroundColor: '#0d6efd'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        this.expensesChart = new Chart(document.getElementById('expensesChart'), {
+            type: 'pie',
+            data: {
+                labels: [],
+                datasets: [{
+                    data: [],
+                    backgroundColor: [
+                        '#0d6efd',
+                        '#198754',
+                        '#ffc107',
+                        '#dc3545',
+                        '#0dcaf0',
+                        '#6c757d'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        this.topCategoriesChart = new Chart(document.getElementById('topCategoriesChart'), {
+            type: 'bar',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Top Categorias',
+                    data: [],
+                    backgroundColor: '#0d6efd'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y'
+            }
+        });
+    }
 }
 
-// Inicializar o gerenciador de gastos
-const expenseManager = new ExpenseManager(); 
+// Inicializa o gerenciador de gastos quando o DOM estiver pronto
+document.addEventListener('DOMContentLoaded', () => {
+    window.expenseManager = new ExpenseManager();
+}); 
