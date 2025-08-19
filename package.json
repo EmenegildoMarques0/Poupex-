@@ -1,0 +1,22 @@
+{
+  "name": "poupex",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/EmenegildoMarques0/Poupex-.git",
+  "author": "erivaldocazinga22 <cazarthdesogner@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"yarn:server\" \"yarn:web\"",
+    "server": "cd ./packages/server && yarn dev --host",
+    "web": "cd ./packages/web && yarn dev --host"
+  },
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.0"
+  }
+}

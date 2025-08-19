@@ -68,6 +68,31 @@ poupex/
 4. Push para a branch (`git push origin feature/sua-feature`)
 5. Abra um Pull Request
 
+## 🤝 Colaboradores
+
+Agradecemos às seguintes pessoas que contribuíram para este projeto:
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/erivaldocazinga22">
+        <img src="https://github.com/erivaldocazinga22.png" width="100px;" alt="Foto do Erivaldo Caginga no GitHub"/><br>
+        <sub>
+          <b>Erivaldo Caginga</b>
+        </sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/EmenegildoMarques0">
+        <img src="https://github.com/EmenegildoMarques0.png" width="100px;" alt="Foto do Emenegildo Marques no GitHub"/><br>
+        <sub>
+          <b>Emenegildo Marques</b>
+        </sub>
+      </a>
+    </td>
+  </tr>
+</table>
+
+
 ## 📜 Licença
 
 MIT License - Veja o arquivo [LICENSE](LICENSE) para detalhes.
