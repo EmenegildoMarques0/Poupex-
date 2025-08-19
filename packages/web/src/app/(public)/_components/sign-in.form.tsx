@@ -1,16 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
@@ -18,8 +7,17 @@ import { useRouter } from "next/navigation";
 import { setCookie } from "nookies";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-
 import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import {
+	Form,
+	FormControl,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 
 export const signInSchema = z.object({
 	email: z.email({ message: "Informe um email válido" }),
