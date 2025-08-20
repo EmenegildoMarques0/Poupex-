@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Header } from "./_components/header";
 
 export default function RootLayout({
 	children,
@@ -7,24 +7,10 @@ export default function RootLayout({
 }) {
 	return (
 		<div>
-			<ul className="flex items-center gap-4 mb-4">
-				<li>
-					<Link href="/" className="hover:underline">
-						Home
-					</Link>
-				</li>
-				<li>
-					<Link href="/costs" className="hover:underline">
-						Gastos
-					</Link>
-				</li>
-				<li>
-					<Link href="/statistic" className="hover:underline">
-						Estatistica
-					</Link>
-				</li>
-			</ul>
-			{children}
+            <Header />
+			<main className="container mx-auto py-10">
+                {children}
+            </main>
 		</div>
 	);
 }
