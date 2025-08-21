@@ -1,22 +1,21 @@
 {
-  "name": "poupex",
-  "version": "1.0.0",
-  "main": "index.js",
-  "repository": "https://github.com/EmenegildoMarques0/Poupex-.git",
-  "author": "erivaldocazinga22 <cazarthdesogner@gmail.com>",
-  "license": "MIT",
+  "name": "shadcn-ui-monorepo",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"yarn:server\" \"yarn:web\"",
-    "server": "cd ./packages/server && yarn dev --host",
-    "web": "cd ./packages/web && yarn dev --host"
-  },
-  "workspaces": {
-    "packages": [
-      "packages/*"
-    ]
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "format": "biome format . --write"
   },
   "devDependencies": {
-    "concurrently": "^9.2.0"
+    "@biomejs/biome": "^2.2.0",
+    "@workspace/typescript-config": "workspace:*",
+    "turbo": "^2.5.5",
+    "typescript": "5.7.3"
+  },
+  "packageManager": "pnpm@10.4.1",
+  "engines": {
+    "node": ">=20"
   }
 }
