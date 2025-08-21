@@ -1,5 +1,3 @@
-Aqui está um README mais interativo, organizado e com um ar profissional, usando Markdown bem formatado, seções claras e comandos destacados para facilitar a leitura:
-
 ---
 
 # Poupex API
@@ -18,7 +16,7 @@ API desenvolvida em **Laravel 12** para o projeto **Poupex**, gerenciando:
 
 Certifique-se de ter os seguintes componentes instalados:
 
-* **Composer**: versão `2.x` ou superior
+* **Composer**: versão `2` ou superior
 * **PHP**: versão `8.2` ou superior (compatível com Laravel 12)
 * **MySQL**: versão `8.0` ou superior
 
