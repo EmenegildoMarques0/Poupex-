@@ -25,5 +25,5 @@ RUN chown -R www-data:www-data storage bootstrap/cache
 # Render define a porta automaticamente através da variável $PORT
 EXPOSE 8080
 
-# Executar migrations antes de iniciar o servidor Laravel
-CMD ["sh", "-c", "php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=${PORT:-8080}"]
+# Executar migrations, gerar swagger e iniciar servidor
+CMD ["sh", "-c", "php artisan migrate --force && php artisan l5-swagger:generate && php artisan serve --host=0.0.0.0 --port=${PORT:-8080}"]
