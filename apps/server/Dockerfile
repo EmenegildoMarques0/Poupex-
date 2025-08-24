@@ -16,14 +16,14 @@ WORKDIR /var/www
 # Copiar arquivos do Laravel
 COPY . .
 
-# Instalar dependências PHP
+# Instalar dependências PHP (sem dev, otimizado)
 RUN composer install --no-dev --optimize-autoloader
 
 # Ajustar permissões de storage
 RUN chown -R www-data:www-data storage bootstrap/cache
 
-# Porta exposta
-EXPOSE 9000
+# Render define a porta automaticamente através da variável $PORT
+EXPOSE 8080
 
-# Comando default (pode usar php-fpm ou artisan serve para testes)
-CMD ["php-fpm"]
+# Comando para iniciar o servidor Laravel na porta definida pelo Render
+CMD ["sh", "-c", "php artisan serve --host=0.0.0.0 --port=${PORT:-8080}"]
