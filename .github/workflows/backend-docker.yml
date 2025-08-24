@@ -19,6 +19,11 @@ jobs:
         run: |
           cp apps/server/.env.example apps/server/.env
 
+      - name: Criar arquivo database.sqlite
+        run: |
+          mkdir -p apps/server/database
+          touch apps/server/database/database.sqlite
+
       - name: Log in to Docker Registry
         uses: docker/login-action@v2
         with:
@@ -31,5 +36,5 @@ jobs:
           context: ./apps/server
           push: true
           tags: |
-            your-docker-user/laravel-backend:latest
-            your-docker-user/laravel-backend:${{ github.sha }}
+            emenegildomarques0/poupex-api:latest
+            emenegildomarques0/poupex-api:${{ github.sha }}
