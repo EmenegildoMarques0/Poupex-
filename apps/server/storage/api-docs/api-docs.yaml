@@ -1,0 +1,197 @@
+openapi: 3.0.0
+info:
+  title: API de Autenticação
+  version: 1.0.0
+  description: API para registro, login e gerenciamento de usuários usando Laravel Sanctum.
+servers:
+  - url: http://localhost:8000/api
+    description: Servidor local
+
+paths:
+  /v1/register:
+    post:
+      summary: Registrar um novo usuário
+      tags:
+        - Autenticação
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+                - password
+                - password_confirmation
+              properties:
+                name:
+                  type: string
+                  example: Emenegildo Marques
+                email:
+                  type: string
+                  format: email
+                  example: emenegildo.marques@example.com
+                password:
+                  type: string
+                  minLength: 6
+                  example: SenhaForte123
+                password_confirmation:
+                  type: string
+                  example: SenhaForte123
+      responses:
+        '201':
+          description: Usuário registrado com sucesso
+        '422':
+          description: Erro de validação
+
+  /v1/login:
+    post:
+      summary: Fazer login
+      tags:
+        - Autenticação
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  example: emenegildo.marques@example.com
+                password:
+                  type: string
+                  example: SenhaForte123
+      responses:
+        '200':
+          description: Login bem-sucedido (retorna token)
+        '401':
+          description: Credenciais inválidas
+
+  /v1/forgot-password:
+    post:
+      summary: Solicitar redefinição de senha
+      tags:
+        - Autenticação
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  example: emenegildo.marques@example.com
+      responses:
+        '200':
+          description: Link de redefinição enviado
+        '404':
+          description: E-mail não encontrado
+
+  /v1/reset-password:
+    post:
+      summary: Redefinir senha
+      tags:
+        - Autenticação
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - token
+                - password
+                - password_confirmation
+              properties:
+                email:
+                  type: string
+                  example: emenegildo.marques@example.com
+                token:
+                  type: string
+                  example: codigo-enviado-por-email
+                password:
+                  type: string
+                  example: NovaSenha456
+                password_confirmation:
+                  type: string
+                  example: NovaSenha456
+      responses:
+        '200':
+          description: Senha redefinida com sucesso
+        '400':
+          description: Token inválido ou expirado
+
+  /v1/logout:
+    post:
+      summary: Fazer logout
+      tags:
+        - Autenticação
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Logout realizado com sucesso
+        '401':
+          description: Token inválido
+
+  /v1/user:
+    get:
+      summary: Obter usuário autenticado
+      tags:
+        - Usuário
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Dados do usuário autenticado
+        '401':
+          description: Token inválido ou ausente
+
+    put:
+      summary: Atualizar dados do usuário
+      tags:
+        - Usuário
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Emenegildo M. Marques
+                email:
+                  type: string
+                  example: novo.email@example.com
+                password:
+                  type: string
+                  example: SenhaAtualizada123
+                password_confirmation:
+                  type: string
+                  example: SenhaAtualizada123
+      responses:
+        '200':
+          description: Usuário atualizado com sucesso
+        '422':
+          description: Erro de validação
+        '401':
+          description: Token inválido
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
