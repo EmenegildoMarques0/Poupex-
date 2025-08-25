@@ -13,6 +13,7 @@ return [
                  * Route for accessing api documentation interface
                  */
                 'api' => 'api/documentation',
+                'schemes' => ['https'],
             ],
             'paths' => [
                 /*
@@ -100,6 +101,7 @@ return [
              * `scanOptions.exclude` overwrites this
              */
             'excludes' => [],
+             'use_absolute_path' => true,
         ],
 
         'scanOptions' => [
