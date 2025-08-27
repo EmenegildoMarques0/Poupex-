@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Modules\Auth\app\Http\Controllers\AuthController;
+use Modules\Auth\app\Http\Controllers\SocialiteController;
 use Modules\Auth\app\Http\Controllers\UserController;
 
 Route::prefix('v1')->group(function () {
@@ -10,7 +11,8 @@ Route::prefix('v1')->group(function () {
     Route::post('login', [AuthController::class, 'login']);
     Route::post('forgot-password', [AuthController::class, 'forgotPassword']);
     Route::post('reset-password', [AuthController::class, 'resetPassword']);
-
+    Route::get('auth/{provider}', [SocialiteController::class, 'redirectToProvider']);
+    Route::get('auth/{provider}/callback', [SocialiteController::class, 'handleProviderCallback']);
     // ROTAS PROTEGIDAS
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('logout', [AuthController::class, 'logout']);
