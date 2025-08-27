@@ -1,0 +1,11 @@
+{
+    "name": "Costs",
+    "alias": "costs",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\Costs\\app\\Providers\\CostsServiceProvider"
+    ],
+    "files": []
+}
