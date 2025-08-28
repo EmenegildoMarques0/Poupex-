@@ -9,15 +9,15 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-di
 
 COPY . .
 
-# Gera caches do Laravel (não executa migrate aqui)
-RUN php artisan config:cache; \
-    if [ $? -ne 0 ]; then echo "Erro: Falha ao gerar cache de configuração do Laravel"; exit 1; fi && \
-    php artisan route:cache; \
-    if [ $? -ne 0 ]; then echo "Erro: Falha ao gerar cache de rotas do Laravel"; exit 1; fi && \
-    php artisan view:cache; \
-    if [ $? -ne 0 ]; then echo "Erro: Falha ao gerar cache de views do Laravel"; exit 1; fi && \
-    php artisan l5-swagger:generate; \
-    if [ $? -ne 0 ]; then echo "Erro: Falha ao gerar documentação do Swagger"; exit 1; fi
+# Gera caches do Laravel com saída detalhada para depuração
+RUN php artisan config:cache 2> /var/www/storage/logs/config_cache.log; \
+    if [ $? -ne 0 ]; then echo "Erro: Falha ao gerar cache de configuração do Laravel. Veja /var/www/storage/logs/config_cache.log"; cat /var/www/storage/logs/config_cache.log; exit 1; fi && \
+    php artisan route:cache 2> /var/www/storage/logs/route_cache.log; \
+    if [ $? -ne 0 ]; then echo "Erro: Falha ao gerar cache de rotas do Laravel. Veja /var/www/storage/logs/route_cache.log"; cat /var/www/storage/logs/route_cache.log; exit 1; fi && \
+    php artisan view:cache 2> /var/www/storage/logs/view_cache.log; \
+    if [ $? -ne 0 ]; then echo "Erro: Falha ao gerar cache de views do Laravel. Veja /var/www/storage/logs/view_cache.log"; cat /var/www/storage/logs/view_cache.log; exit 1; fi && \
+    php artisan l5-swagger:generate 2> /var/www/storage/logs/swagger_generate.log; \
+    if [ $? -ne 0 ]; then echo "Erro: Falha ao gerar documentação do Swagger. Veja /var/www/storage/logs/swagger_generate.log"; cat /var/www/storage/logs/swagger_generate.log; exit 1; fi
 
 # Etapa 2: imagem final com PHP-FPM + Nginx
 FROM php:8.2-fpm-alpine
@@ -32,7 +32,8 @@ WORKDIR /var/www
 COPY --from=build /var/www /var/www
 
 # Garante que storage/ e database/ sejam graváveis
-RUN chown -R www-data:www-data storage bootstrap/cache; \
+RUN mkdir -p /var/www/storage/logs && \
+    chown -R www-data:www-data storage bootstrap/cache; \
     if [ $? -ne 0 ]; then echo "Erro: Falha ao alterar permissões de storage/bootstrap"; exit 1; fi && \
     chmod -R 775 storage bootstrap/cache; \
     if [ $? -ne 0 ]; then echo "Erro: Falha ao definir permissões de storage/bootstrap"; exit 1; fi && \
@@ -51,7 +52,7 @@ COPY ./deploy/supervisord.conf /etc/supervisord.conf
 EXPOSE 8080
 
 # Executa migrations e inicia Supervisor
-CMD sh -c "php artisan migrate --force; \
-    if [ $? -ne 0 ]; then echo 'Erro: Falha ao executar migrations do Laravel'; exit 1; fi && \
+CMD sh -c "php artisan migrate --force 2> /var/www/storage/logs/migrate.log; \
+    if [ $? -ne 0 ]; then echo 'Erro: Falha ao executar migrations do Laravel. Veja /var/www/storage/logs/migrate.log'; cat /var/www/storage/logs/migrate.log; exit 1; fi && \
     /usr/bin/supervisord -c /etc/supervisord.conf; \
     if [ $? -ne 0 ]; then echo 'Erro: Falha ao iniciar o Supervisor'; exit 1; fi"
