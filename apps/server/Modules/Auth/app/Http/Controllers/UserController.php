@@ -41,7 +41,7 @@ class UserController extends Controller
         $user = $request->user();
         if ($request->filled('name')) $user->name = $request->name;
         if ($request->filled('password')) $user->password = Hash::make($request->password);
-        $user->save();
+        //$user->save();
 
         return response()->json([
             'message' => 'Perfil atualizado com sucesso',
