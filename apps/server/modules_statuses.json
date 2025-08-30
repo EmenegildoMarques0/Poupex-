@@ -1,4 +1,5 @@
 {
     "Auth": true,
-    "Costs": true
+    "Costs": true,
+    "Stats": true
 }
