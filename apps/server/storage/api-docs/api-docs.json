@@ -818,6 +818,258 @@
                 ]
             }
         },
+        "/api/v1/stats": {
+            "get": {
+                "tags": [
+                    "Statistics"
+                ],
+                "summary": "Retrieve authenticated user's cost statistics",
+                "operationId": "eddc7c54122db55590e32e6c277cf2d3",
+                "parameters": [
+                    {
+                        "name": "start_date",
+                        "in": "query",
+                        "description": "Start date for filtering costs (format: YYYY-MM-DD)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "2025-08-01"
+                        }
+                    },
+                    {
+                        "name": "end_date",
+                        "in": "query",
+                        "description": "End date for filtering costs (format: YYYY-MM-DD)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "2025-08-30"
+                        }
+                    },
+                    {
+                        "name": "category",
+                        "in": "query",
+                        "description": "Filter by cost category",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "Office"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response with statistics data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "totals": {
+                                                    "properties": {
+                                                        "week": {
+                                                            "type": "string",
+                                                            "example": "AOA 452,25"
+                                                        },
+                                                        "month": {
+                                                            "type": "string",
+                                                            "example": "AOA 452,25"
+                                                        },
+                                                        "total": {
+                                                            "type": "string",
+                                                            "example": "AOA 452,25"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "averages": {
+                                                    "properties": {
+                                                        "daily": {
+                                                            "type": "string",
+                                                            "example": "AOA 15,08"
+                                                        },
+                                                        "monthly": {
+                                                            "type": "string",
+                                                            "example": "AOA 75,38"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "top": {
+                                                    "properties": {
+                                                        "category": {
+                                                            "type": "string",
+                                                            "example": "Office (AOA 452,25)"
+                                                        },
+                                                        "day": {
+                                                            "type": "string",
+                                                            "example": "Friday (AOA 452,25)"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "forecast": {
+                                                    "properties": {
+                                                        "month": {
+                                                            "type": "string",
+                                                            "example": "AOA 467,33"
+                                                        },
+                                                        "comparison": {
+                                                            "type": "string",
+                                                            "example": "0.0%"
+                                                        },
+                                                        "savings": {
+                                                            "type": "string",
+                                                            "example": "AOA 7,54"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "charts": {
+                                                    "properties": {
+                                                        "categoryChart": {
+                                                            "properties": {
+                                                                "labels": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "string",
+                                                                        "example": "Office"
+                                                                    }
+                                                                },
+                                                                "data": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "number",
+                                                                        "example": 452.25
+                                                                    }
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        },
+                                                        "dailyChart": {
+                                                            "properties": {
+                                                                "labels": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "string",
+                                                                        "example": "29/08/2025"
+                                                                    }
+                                                                },
+                                                                "data": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "number",
+                                                                        "example": 452.25
+                                                                    }
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        },
+                                                        "monthlyChart": {
+                                                            "properties": {
+                                                                "labels": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "string",
+                                                                        "example": "08/2025"
+                                                                    }
+                                                                },
+                                                                "data": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "number",
+                                                                        "example": 452.25
+                                                                    }
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        },
+                                                        "topCategoriesChart": {
+                                                            "properties": {
+                                                                "labels": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "string",
+                                                                        "example": "Office"
+                                                                    }
+                                                                },
+                                                                "data": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "number",
+                                                                        "example": 452.25
+                                                                    }
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - User not authenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Error retrieving statistics"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/v1/register": {
             "post": {
                 "tags": [
@@ -944,6 +1196,10 @@
         {
             "name": "Costs",
             "description": "Costs"
+        },
+        {
+            "name": "Statistics",
+            "description": "Statistics"
         },
         {
             "name": "User",
