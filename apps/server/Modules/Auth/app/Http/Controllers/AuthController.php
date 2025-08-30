@@ -72,4 +72,20 @@ class AuthController extends Controller
             ? response()->json(['message' => 'Senha redefinida com sucesso'])
             : response()->json(['message' => 'Erro ao redefinir senha'], 400);
     }
+
+    public function TokenVerify(){
+        $user = Auth::guard('sanctum')->user();
+
+        if (!$user) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Token inválido'
+            ], 401);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'user' => $user
+        ], 200);
+    }
 }
