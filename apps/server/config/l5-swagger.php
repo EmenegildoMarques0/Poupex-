@@ -101,7 +101,7 @@ return [
              * `scanOptions.exclude` overwrites this
              */
             'excludes' => [],
-             'use_absolute_path' => true,
+            'use_absolute_path' => true,
         ],
 
         'scanOptions' => [
@@ -111,8 +111,8 @@ return [
              * @link https://zircote.github.io/swagger-php/reference/processors.html
              */
             'default_processors_configuration' => [
-            /** Example */
-            /**
+                /** Example */
+                /**
              * 'operationId.hash' => true,
              * 'pathFilter' => [
              * 'tags' => [
@@ -173,6 +173,12 @@ return [
         */
         'securityDefinitions' => [
             'securitySchemes' => [
+                'Bearer' => [
+                    'type' => 'apiKey',
+                    'description' => 'Enter token in format (Bearer <token>)',
+                    'name' => 'Authorization',
+                    'in' => 'header',
+                ],
                 /*
                  * Examples of Security schemes
                  */
@@ -220,6 +226,10 @@ return [
                 */
             ],
             'security' => [
+
+                [
+                    'Bearer' => [],
+                ],
                 /*
                  * Examples of Securities
                  */
@@ -231,8 +241,7 @@ return [
                     ],
 
                     'passport' => []
-                    */
-                ],
+                    */],
             ],
         ],
 

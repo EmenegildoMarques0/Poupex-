@@ -1251,7 +1251,7 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "Bearer": []
                     }
                 ]
             }
@@ -1390,6 +1390,21 @@
         {
             "name": "User",
             "description": "User"
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "Bearer": {
+                "type": "apiKey",
+                "description": "Enter token in format (Bearer <token>)",
+                "name": "Authorization",
+                "in": "header"
+            }
+        }
+    },
+    "security": [
+        {
+            "Bearer": []
         }
     ]
 }
