@@ -7,7 +7,7 @@ namespace App\Swagger;
  *     path="/api/v1/stats",
  *     tags={"Statistics"},
  *     summary="Retrieve authenticated user's cost statistics",
- *     security={{"bearerAuth": {}}},
+ *     security={{"Bearer": {}}},
  *     @OA\Parameter(
  *         name="start_date",
  *         in="query",

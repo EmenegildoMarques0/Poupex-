@@ -1,0 +1,29 @@
+name: Ping API
+
+on:
+  schedule:
+    - cron: '*/10 * * * *' # Runs every 10 minutes
+  workflow_dispatch: # Allows manual triggering
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Ping Website
+        run: |
+          curl -s -o /dev/null -w "%{http_code}" https://poupex-api.onrender.com/api/documentation
+        env:
+          URL: https://poupex-api.onrender.com/api/documentation
+
+      - name: Check Response
+        run: |
+          response=$(curl -s -o /dev/null -w "%{http_code}" $URL)
+          if [ $response -eq 200 ]; then
+            echo "Ping successful: $URL responded with status $response"
+          else
+            echo "Ping failed: $URL responded with status $response"
+            exit 1
+          fi
+        env:
+          URL: https://poupex-api.onrender.com/api/documentation

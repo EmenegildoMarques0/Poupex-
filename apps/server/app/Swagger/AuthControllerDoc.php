@@ -2,12 +2,10 @@
 
 namespace App\Swagger;
 
+use App\Http\Controllers\Controller;
+
 /**
- * @OA\Info(
- *     version="1.0.0",
- *     title="Poupex API",
- *     description="Documentação da API Poupex"
- * )
+
  * @OA\Post(
  *     path="/api/v1/login",
  *     tags={"Auth"},
@@ -144,4 +142,4 @@ namespace App\Swagger;
  *     )
  * )
  */
-class AuthControllerDoc {}
+class AuthControllerDoc extends Controller{}
