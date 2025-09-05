@@ -48,4 +48,11 @@ export const nextJsConfig = [
       "react/prop-types": "off",
     },
   },
+  {
+    rules: {
+      semi: ["error", "always"],                // sempre usar ;
+      quotes: ["error", "double", { avoidEscape: true }], // aspas duplas
+      indent: ["error", 4, { SwitchCase: 1 }],  // 4 espaços/tab
+    },
+  },
 ]

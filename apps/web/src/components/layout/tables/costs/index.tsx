@@ -32,10 +32,14 @@ import {
 	TableRow,
 } from "@workspace/ui/components/table";
 import { columns } from "./columns";
-import { data } from "./data";
 import { useSearchColumnFilter } from "@/hooks/search-column-filter";
+import { Costs } from "@/@types/costs.type";
 
-export function TableListCosts() {
+interface TableListCostsProps {
+	data: Costs[]
+}
+
+export function TableListCosts({ data }: TableListCostsProps) {
 	const [pageQuery, setPageQuery] = useQueryState(
 		"page",
 		parseAsInteger.withDefault(1),

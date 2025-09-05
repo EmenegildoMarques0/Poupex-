@@ -35,7 +35,7 @@ export function RegisterUserForm() {
   });
 
   const onSubmit = async (formData: RegisterUserValues) => {
-    const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/v1/register`;
+    const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/register`;
 
     try {
       const response = await fetch(API_URL, {
@@ -50,7 +50,6 @@ export function RegisterUserForm() {
       });
 
       const data = await response.json().catch(() => null);
-      console.log("🔎 Resposta do backend:", data);
 
       if (!response.ok) {
         toast.error("Erro ao cadastrar usuário", {
