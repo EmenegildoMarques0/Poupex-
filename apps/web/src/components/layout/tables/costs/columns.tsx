@@ -12,21 +12,26 @@ import {
     DropdownMenuTrigger,
 } from "@workspace/ui/components/dropdown-menu";
 import { copyToClipboard } from "@/lib/formats/copy-to-clipboard";
-import { formatDate } from "@/lib/formats/format-date";
+import { formatDate, formatDateFull } from "@/lib/formats/format-date";
 import { CopyCheck, Edit, Info, MoreVertical, Trash2 } from "lucide-react";
 import { Costs } from "@/@types/costs.type";
 import { formatCurrency } from "@/lib/formats/format-currency";
 import { DeleteDialog } from "./more-dialogs/delete-dialog";
 import { UpdateDialog } from "./more-dialogs/update-dialog";
 import { InfoDialog } from "./more-dialogs/info-dialog";
+import { deleteCostAction } from "@/actions/costs/delete-cost";
+import { parseCookies } from "nookies";
+import { updateCostAction } from "@/actions/costs/update-cost";
+
+const { "ppx-auth.session-token": token } = parseCookies()
 
 export const columns: ColumnDef<Costs>[] = [
     {
 		accessorKey: "id",
-		header: () => <div className="text-start">Índice</div>,
+		header: () => <div className="text-center">Índice</div>,
 		cell: ({ row }) => {
 			return (
-				<div className="text-start">
+				<div className="text-center">
 					{row.original.id}
 				</div>
 			);
@@ -49,22 +54,21 @@ export const columns: ColumnDef<Costs>[] = [
 		header: "Descrição",
 		cell: ({ row }) => {
 			return (
-				<div>
-						{row.original.description}
+				<div className="truncate max-w-[200px]">
+					{row.original.description}
 				</div>
 			);
 		},
 	},
 	{
+		accessorKey: "data",
+		header: "Data",
+		cell: ({ row }) => formatDateFull(row.original.data),
+	},
+	{
 		accessorKey: "value",
 		header: "Valor (Kz)",
-		cell: ({ row }) => {
-			return (
-				<div>
-					{formatCurrency(row.original.value)}
-				</div>
-			);
-		},
+		cell: ({ row }) => formatCurrency(row.original.value),
 	},
 	/* {
 		accessorKey: "process",
@@ -113,13 +117,39 @@ export const columns: ColumnDef<Costs>[] = [
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="end">
 						<DropdownMenuLabel>Acções</DropdownMenuLabel>
-							<DeleteDialog onConfirm={() => {}} data={cost}>
+							<DeleteDialog onConfirm={async (id) => {
+								if (!token) throw new Error("Não autorizado.");
+								const res = await deleteCostAction(id, token);
+								
+								if (!res?.success) {
+									toast.error("Falha ao deletar gasto.", {
+										description: "Tente novamente mais tarde"
+									})
+									throw new Error(res?.error);
+    							}
+								
+								toast.success("Gasto apagado com sucesso.")
+							}} data={cost}>
 						<DropdownMenuItem  onSelect={(e) => e.preventDefault()}>
                                 <Trash2 />
 							<span>Apagar</span>
 						</DropdownMenuItem>
                             </DeleteDialog>
-							<UpdateDialog data={cost}>
+							<UpdateDialog data={cost} onUpdate={async (formData) => {
+								if (!token) throw new Error("Não autorizado.");
+								if (!formData.id) throw new Error("Todos os campos devem ser preechidos.");
+								const res = await updateCostAction(formData.id, formData, token);
+								
+								if (!res?.success) {
+									toast.error("Falha ao actualizar gasto.", {
+										description: "Tente novamente mais tarde"
+									})
+									throw new Error(res?.error);
+								}
+								
+								toast.success("Gasto apagado com sucesso.")
+								}
+							}>
 						<DropdownMenuItem  onSelect={(e) => e.preventDefault()}>
                                 <Edit />
 							<span>Alterar</span>

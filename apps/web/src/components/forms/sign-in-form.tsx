@@ -31,8 +31,7 @@ export const SignInForm = () => {
     });
 
     const onSubmit = async (formData: SignInSchemaValues) => {
-        const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/v1/login`;
-        console.log("🔗 API_URL Final:", API_URL);
+        const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/login`;
 
         try {
             const response = await fetch(API_URL, {
@@ -44,9 +43,7 @@ export const SignInForm = () => {
                 }),
             });
 
-            // sempre tenta ler a resposta do backend
             const data = await response.json().catch(() => null);
-            console.log("🔎 Resposta do backend:", data);
 
             if (!response.ok) {
                 toast.error("Falha ao entrar", {
@@ -55,8 +52,7 @@ export const SignInForm = () => {
                 return;
             }
 
-            // ajusta conforme a estrutura real da API
-            setCookie(null, "ppx-auth.session-token", data?.data?.token, {
+            setCookie(null, "ppx-auth.session-token", data?.token, {
                 maxAge: 60 * 60 * 1, // 1h
                 path: "/",
             });

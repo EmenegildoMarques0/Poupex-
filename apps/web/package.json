@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
+    "@radix-ui/react-tabs": "^1.1.13",
     "@tanstack/react-table": "^8.21.3",
     "@workspace/ui": "workspace:*",
     "date-fns": "^4.1.0",
@@ -35,6 +36,7 @@
     "@types/react-dom": "^19.1.7",
     "@workspace/eslint-config": "workspace:^",
     "@workspace/typescript-config": "workspace:*",
+    "orval": "^7.11.2",
     "typescript": "^5.9.2"
   }
 }
