@@ -3,7 +3,8 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem,
 import Link from "next/link";
 import React from "react";
 import { AvatarUser } from "./avatar-user";
-import { User2 } from "lucide-react";
+import { LogOut, User2 } from "lucide-react";
+import { logoutAction } from "@/actions/auth/logout.action";
 
 interface AvatarProfileDialogProps {
     data: {
@@ -23,7 +24,7 @@ const Itens = [
     }
 ]
 
-export function AvatarProfileDropdown({ data: user, handleSignOut }: AvatarProfileDialogProps) {
+export function AvatarProfileDropdown({ data: user }: AvatarProfileDialogProps) {
 
     return (
         <DropdownMenu>
@@ -62,8 +63,16 @@ export function AvatarProfileDropdown({ data: user, handleSignOut }: AvatarProfi
                     ))}
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleSignOut}>
-                    Terminar Sessão
+                <DropdownMenuItem asChild>
+                    <form action={logoutAction} className="w-full">
+                        <button
+                            type="submit"
+                            className="w-full text-left  px-1 flex items-center gap-2"
+                        >
+                            <LogOut />
+                            <span>Terminar Sessão</span>
+                        </button>
+                    </form>
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>

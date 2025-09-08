@@ -154,7 +154,7 @@ export function RegisterUserForm() {
           className="w-full"
         >
           {form.formState.isSubmitting ? (
-            <LoaderWidget label="Cadastrando usuário..." />
+            <LoaderWidget label="Cadastrando usuário" />
           ) : (
             "Criar conta"
           )}
