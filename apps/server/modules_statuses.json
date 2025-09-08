@@ -1,5 +1,6 @@
 {
     "Auth": true,
     "Costs": true,
-    "Stats": true
+    "Stats": true,
+    "Courses": true
 }
