@@ -18,7 +18,7 @@ export function ThemeSelect() {
         setMounted(true);
     }, []);
 
-    if (!mounted) return null;
+    // if (!mounted) return null;
 
     return (
         <Select value={theme} onValueChange={(val) => setTheme(val)}>

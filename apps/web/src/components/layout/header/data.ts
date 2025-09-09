@@ -20,7 +20,7 @@ export const NAV_LINKS_MOBLE = [
     ...NAV_LINKS,
     {
         id: "4",
-        href: "/",
-        label: ""
+        href: "/profile",
+        label: "Definições de conta"
     }
 ]

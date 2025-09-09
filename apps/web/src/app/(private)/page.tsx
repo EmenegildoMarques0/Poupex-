@@ -1,5 +1,5 @@
 import { CustomCard, CustomCardContent, CustomCardIcon } from "@/components/layout/custom-card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@workspace/ui/components/table";
+// import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@workspace/ui/components/table";
 import { Calendar } from "lucide-react";
 import {
 	Select,
@@ -15,6 +15,7 @@ import { ResponseStatistic } from "@/@types/statistic.type";
 import { ChartPieDonut } from "@/components/charts/chart-pie-donut";
 import { ChartConfig } from "@workspace/ui/components/chart";
 import { ChartBarInteractive } from "@/components/charts/chart-bar-interactive";
+import { NotAuthenticatedSection } from "@/components/layout/not-authenticated-section";
 
 const METRICS_CARD_ITEMS = [
 	{
@@ -44,7 +45,7 @@ export default async function Home() {
 	const token = (await cookies()).get("ppx-auth.session-token")?.value;
 		
 	if (!token) {
-		return <p>Não autenticado</p>;
+		return <NotAuthenticatedSection />;
 	}
 	
 	const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/stats`;
@@ -74,6 +75,7 @@ export default async function Home() {
 		}
 		return acc
 	}, {} as ChartConfig)
+
     return (
         <div className="space-y-4">
             <div>
@@ -141,7 +143,7 @@ export default async function Home() {
 				/>
 			</section>
 
-			<section className="p-4 space-y-4 min-h-96 rounded-xl bg-neutral-50 dark:bg-neutral-900">
+			{/* <section className="p-4 space-y-4 min-h-96 rounded-xl bg-neutral-50 dark:bg-neutral-900">
 				<div>
 					<h1 className="text-xl font-bold">Últimos Gastos</h1>
 				</div>
@@ -165,7 +167,7 @@ export default async function Home() {
 						</TableRow>
 					</TableBody>
 				</Table>
-			</section>
+			</section> */}
 			{/* <pre>{JSON.stringify(data,null, 4)}</pre> */}
 
         </div>

@@ -53,7 +53,7 @@ export function CostsForm({ defaultValues, onSubmit }: CostsFormProps) {
 					control={form.control}
 					name="category"
 					render={({ field }) => (
-						<FormItem>
+						<FormItem className="md:col-span-1 col-span-2">
 							<FormLabel>Categoria</FormLabel>
 							<Select onValueChange={field.onChange} value={field.value}>
 								<FormControl>
@@ -82,7 +82,7 @@ export function CostsForm({ defaultValues, onSubmit }: CostsFormProps) {
 					control={form.control}
 					name="data"
 					render={({ field }) => (
-						<FormItem>
+						<FormItem className="md:col-span-1 col-span-2">
 							<FormLabel>Data</FormLabel>
 							<Input type="date" {...field} />
 							<FormMessage />
@@ -116,7 +116,7 @@ export function CostsForm({ defaultValues, onSubmit }: CostsFormProps) {
 							</div>
 							<Textarea
 								placeholder="Escreva uma pequena descrição do seu gasto"
-								className="p-4 min-h-20"
+								className="p-4 min-h-20 placeholder:text-sm"
 								maxLength={255}
 								{...field}
 							/>

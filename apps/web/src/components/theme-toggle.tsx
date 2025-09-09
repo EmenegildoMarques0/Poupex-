@@ -13,7 +13,7 @@ import {
 } from "@workspace/ui/components/dropdown-menu";
 
 interface ThemeToggleProps {
-  className?: string; // simplificado
+  className?: string;
 }
 
 export const ThemeToggle = memo(function ThemeToggle({

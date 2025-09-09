@@ -1,6 +1,36 @@
+import { ResponseStatistic } from "@/@types/statistic.type";
+import { NotAuthenticatedSection } from "@/components/layout/not-authenticated-section";
 import { Badge } from "@workspace/ui/components/badge";
+import { cookies } from "next/headers";
 
-export default function StatisticPage() {
+export default async function StatisticPage() {
+    const token = (await cookies()).get("ppx-auth.session-token")?.value;
+            
+    if (!token) {
+        return <NotAuthenticatedSection />;
+    }
+        
+    const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/stats`;
+    
+    const response = await fetch(API_URL, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+        // cache: "no-store",
+        next: {
+            tags: ["get-statistic"],
+            revalidate: 60 // 01 min
+        }
+    });
+    
+    if (!response.ok) {
+        console.error(`HTTP error! status: ${response.status}`);
+        return <p>Erro ao carregar os dados</p>;
+    }
+    
+    const data: ResponseStatistic = await response.json();
+
     return (
         <div className="grid md:grid-cols-2 gap-4">
             <section className="p-4 col-span-2 space-y-4 min-h-96 rounded-xl bg-neutral-50 dark:bg-neutral-900">
@@ -79,6 +109,7 @@ export default function StatisticPage() {
                     </section>
                 </div>
             </section>
+            <pre>{JSON.stringify(data,null, 4)}</pre>
         </div>
     )
 }

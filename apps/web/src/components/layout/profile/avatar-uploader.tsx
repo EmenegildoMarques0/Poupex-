@@ -18,7 +18,7 @@ export function AvatarUploader({ data: session }: AvatarUploaderProps) {
                 <AvatarFallback className="text-lg">{session.name.substring(0, 2).toUpperCase()}</AvatarFallback>
             </Avatar>
             <div>
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" disabled>
                     <Camera className="mr-2 h-4 w-4" />
                     Alterar Foto
                 </Button>

@@ -1,9 +1,10 @@
+"use client"
 import { Button } from "@workspace/ui/components/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@workspace/ui/components/dropdown-menu";
 import Link from "next/link";
 import React from "react";
 import { AvatarUser } from "./avatar-user";
-import { LogOut, User2 } from "lucide-react";
+import { LogOut, Settings } from "lucide-react";
 import { logoutAction } from "@/actions/auth/logout.action";
 
 interface AvatarProfileDialogProps {
@@ -18,8 +19,8 @@ interface AvatarProfileDialogProps {
 const Itens = [
     {
         id: "10/12/2032",
-        label: "Perfil",
-        icon: User2,
+        label: "Definições de conta",
+        icon: Settings,
         url: "/profile",
     }
 ]
