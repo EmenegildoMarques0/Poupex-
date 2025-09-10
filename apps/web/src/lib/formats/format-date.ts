@@ -32,7 +32,9 @@ export function formatDateFull(input: Date | string): string {
  */
 
 export function getDayOfWeek(n: number): string {
-	const baseMonday = new Date(2025, 8, 1); // 1 de setembro 2025 é segunda-feira
-	const d = addDays(baseMonday, n - 1);
-	return format(d, 'EEEE', { locale: ptBR });
+	if (typeof n !== 'number' || !Number.isFinite(n)) return ''
+	const offset = ((n - 1) % 7 + 7) % 7
+	const baseMonday = new Date(2025, 8, 1)
+	
+	return format(addDays(baseMonday, offset), 'EEEE', { locale: ptBR })
 }
