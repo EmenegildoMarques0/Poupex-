@@ -4,7 +4,7 @@ import Link from "next/link";
 export default function RegisterPage() {
   return (
         <main className="h-screen flex flex-col gap-6 md:flex-row-reverse">
-            <div className="flex-1 flex md:items-center justify-center px-6">
+            <div className="flex-1 flex items-center justify-center px-6">
                 <div className="flex flex-col gap-6 max-w-md w-full">
                     <div className="text-center md:text-left">
                         <h1 className="text-4xl font-bold mb-4 text-primary">Poupex</h1>
