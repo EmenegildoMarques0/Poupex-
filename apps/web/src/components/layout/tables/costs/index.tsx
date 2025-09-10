@@ -11,7 +11,7 @@ import {
 	useReactTable,
 	type VisibilityState,
 } from "@tanstack/react-table";
-import { ChevronDown, SearchX } from "lucide-react";
+import { ChevronDown, Info, SearchX } from "lucide-react";
 import { parseAsInteger, useQueryState } from "nuqs";
 import * as React from "react";
 
@@ -86,7 +86,7 @@ export function TableListCosts({ data }: TableListCostsProps) {
 		},
 	});
 
-	const { search, setSearch } = useSearchColumnFilter(table, "category");
+	const { search, setSearch } = useSearchColumnFilter(table, "description");
 
 	return (
 		<div className="w-full">
@@ -193,7 +193,9 @@ export function TableListCosts({ data }: TableListCostsProps) {
 			<div className="grid min-sm:grid-cols-2 gap-4 items-stretch md:hidden">
 				{table.getRowModel().rows.length ? (
 					table.getRowModel().rows.map(row =>(
-						<CostCard key={row.id} cost={row.original} />
+						<CostCard key={row.id} cost={row.original} 
+							
+						/>
 					))
 				) : (
 					<div className="flex flex-col min-sm:col-span-2 min-h-80 justify-center select-none items-center gap-2 text-muted-foreground">

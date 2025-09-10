@@ -24,6 +24,7 @@ import { Button } from "@workspace/ui/components/button";
 import { Textarea } from "@workspace/ui/components/textarea";
 import { RegisterCostFormValues } from "@/@types/validations/register-cost.schema";
 import { formatCurrency } from "@/lib/formats/format-currency";
+import { format } from "date-fns";
 
 interface CostsFormProps {
   defaultValues?: Partial<RegisterCostFormValues & { id?: string }>;
@@ -43,10 +44,15 @@ export function CostsForm({ defaultValues, onSubmit }: CostsFormProps) {
 		},
 	});
 
+	const onSubmitInternal = async (formData: RegisterCostFormValues) => {
+		onSubmit(formData)
+		form.reset();
+	}
+
 	return (
 		<Form {...form}>
 			<form
-				onSubmit={form.handleSubmit(onSubmit)}
+				onSubmit={form.handleSubmit(onSubmitInternal)}
 				className="space-y-4 grid md:grid-cols-2 gap-x-4"
 			>
 				<FormField
@@ -83,9 +89,13 @@ export function CostsForm({ defaultValues, onSubmit }: CostsFormProps) {
 					name="data"
 					render={({ field }) => (
 						<FormItem className="md:col-span-1 col-span-2">
-							<FormLabel>Data</FormLabel>
-							<Input type="date" {...field} />
-							<FormMessage />
+						<FormLabel>Data</FormLabel>
+						<Input
+							type="date"
+							max={format(new Date(), "yyyy-MM-dd")}
+							{...field}
+						/>
+						<FormMessage />
 						</FormItem>
 					)}
 				/>

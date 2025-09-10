@@ -1,97 +1,130 @@
 "use client";
 
-import { Edit, Trash2 } from "lucide-react";
-
+import { Edit, Trash2, Info } from "lucide-react";
 import {
-    Card,
-    CardHeader,
-    CardTitle,
-    CardContent,
-    CardFooter,
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter,
 } from "@workspace/ui/components/card";
 import { Button } from "@workspace/ui/components/button";
 import { Badge } from "@workspace/ui/components/badge";
 import { Costs } from "@/@types/costs.type";
-
+import { InfoDialog } from "./tables/costs/more-dialogs/info-dialog";
+import { UpdateDialog } from "./tables/costs/more-dialogs/update-dialog";
+import { DeleteDialog } from "./tables/costs/more-dialogs/delete-dialog";
+import { deleteCostAction } from "@/actions/costs/delete-cost";
+import { updateCostAction } from "@/actions/costs/update-cost";
+import { toast } from "sonner";
 
 type Props = {
-    cost: Costs;
-    onEdit?: (cost: Costs) => void;
-    onDelete?: (id: number | string) => void;
-    currency?: string; // default: USD
-    locale?: string; // default: pt-AO
+  cost: Costs;
+  currency?: string;
+  locale?: string;
 };
 
 export function CostCard({
-    cost,
-    onEdit,
-    onDelete,
-    currency = "AOA",
-    locale = "pt-PT",
+  cost,
+  currency = "AOA",
+  locale = "pt-PT",
 }: Props) {
-    const formatDate = (d: string) => {
-        try {
-            const date = new Date(d);
-            return new Intl.DateTimeFormat(locale, {
-                day: "2-digit",
-                month: "short",
-                year: "numeric",
-            }).format(date);
-        } catch {
-            return d;
-        }
-    };
+  const formatDate = (d: string) => {
+    if (!d) return "—";
+    const date = new Date(d);
+    return isNaN(date.getTime())
+      ? d
+      : new Intl.DateTimeFormat(locale, {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+        }).format(date);
+  };
 
-    const formatCurrency = (v: number) =>
-        new Intl.NumberFormat(locale, { style: "currency", currency }).format(v);
+  const formatCurrency = (v: number) =>
+    new Intl.NumberFormat(locale, { style: "currency", currency }).format(v);
 
-    return (
-        <Card className="w-full rounded-2xl border shadow-lg p-4 bg-background md:hidden transition-transform active:scale-[0.98] ">
-            <CardHeader className="p-0 mb-4">
-                <div className="flex flex-col gap-1">
-                    <Badge className="self-start text-[11px] uppercase tracking-wide px-2 py-0.5 bg-primary/10 text-primary">
-                        {cost.category}
-                    </Badge>
-                    <CardTitle title={cost.description} className="text-xl font-semibold leading-tight break-words line-clamp-2">
-                        {cost.description || "Sem descrição"}
-                    </CardTitle>
-                    <p className="text-xs text-muted-foreground">{formatDate(cost.data)}</p>
-                </div>
-            </CardHeader>
+  const handleDelete = async (id: number | string) => {
+    try {
+      const res = await deleteCostAction(id);
+      if (!res?.success) {
+        toast.error("Falha ao deletar gasto.", {
+          description: "Tente novamente mais tarde",
+        });
+        throw new Error(res?.error);
+      }
+      toast.success("Gasto apagado com sucesso.");
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
-      
-            <CardContent className="p-0 flex-1 flex items-end">
-                <div className="flex flex-col gap-3">
-                    <div>
-                        <span className="block text-xs text-muted-foreground">Valor</span>
-                        <span className="text-2xl font-bold text-primary truncate max-w-20">
-                            {formatCurrency(cost.value)}
-                        </span>
-                    </div>
-                </div>
-            </CardContent>
+  return (
+    <Card className="w-full rounded-2xl border shadow-lg bg-background md:hidden p-4 transition-transform active:scale-[0.98]">
+      <CardHeader className="p-0 mb-4">
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center justify-between gap-4">
+            <Badge className="self-start text-[11px] uppercase tracking-wide px-2 py-0.5 bg-primary/10 text-primary">
+            {cost.category}
+          </Badge>
+           <InfoDialog data={cost}>
+          <Button variant="ghost" size="icon">
+            <Info className="h-4 w-4" />
+            <span className="sr-only">Detalhes</span>
+          </Button>
+        </InfoDialog>
+          </div>
+          <CardTitle
+            title={cost.description}
+            className="text-xl font-semibold leading-tight break-words line-clamp-2"
+          >
+            {cost.description || "Sem descrição"}
+          </CardTitle>
+          <p className="text-xs text-muted-foreground">{formatDate(cost.data)}</p>
+        </div>
+      </CardHeader>
 
-      
-            <CardFooter className="mt-4 p-0 grid grid-cols-2 gap-3">
-                <Button
-                    variant="outline"
-                    size="lg"
-                    className="w-full"
-                    onClick={() => onEdit && onEdit(cost)}
-                >
-                    <Edit className="h-4 w-4" />
-                    Editar
-                </Button>
-                <Button
-                    variant="destructive"
-                    size="lg"
-                    className="w-full"
-                    onClick={() => onDelete && onDelete(cost.id)}
-                >
-                    <Trash2 className="h-4 w-4" />
-                    Excluir
-                </Button>
-            </CardFooter>
-        </Card>
-    );
+      <CardContent className="p-0 flex-1 flex items-end">
+        <div className="flex flex-col gap-3">
+          <div>
+            <span className="block text-xs text-muted-foreground">Valor</span>
+            <span className="text-2xl font-bold text-primary truncate max-w-20">
+              {formatCurrency(cost.value)}
+            </span>
+          </div>
+        </div>
+      </CardContent>
+
+      <CardFooter className="mt-4 p-0 grid grid-cols-2 gap-3">
+        <UpdateDialog
+          data={cost}
+          onUpdate={async (values) => {
+            if (!values.id) throw new Error("Todos os campos devem ser preenchidos.");
+            const res = await updateCostAction(values.id, values);
+
+            if (!res?.success) {
+              toast.error("Falha ao actualizar gasto.", {
+                description: "Tente novamente mais tarde",
+              });
+              throw new Error(res?.error);
+            }
+
+            toast.success("Gasto actualizado com sucesso.");
+          }}
+        >
+          <Button variant="outline" size="lg" className="w-full">
+            <Edit className="h-4 w-4" />
+            Editar
+          </Button>
+        </UpdateDialog>
+
+        <DeleteDialog data={cost} onConfirm={() => handleDelete(cost.id)}>
+          <Button variant="destructive" size="lg" className="w-full">
+            <Trash2 className="h-4 w-4" />
+            Excluir
+          </Button>
+        </DeleteDialog>
+      </CardFooter>
+    </Card>
+  );
 }

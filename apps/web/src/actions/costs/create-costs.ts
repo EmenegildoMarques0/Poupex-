@@ -1,8 +1,12 @@
 "use server";
 import { RegisterCostFormValues } from "@/@types/validations/register-cost.schema";
 import { revalidateTag } from "next/cache";
+import { cookies } from "next/headers";
 
-export async function createCostAction(formData: RegisterCostFormValues, token: string) {
+export async function createCostAction(formData: RegisterCostFormValues) {
+    const store = await cookies()
+    const token = store.get("ppx-auth.session-token")?.value;
+    
     if (!token) {
         return { error: "Não autenticado" };
     }
