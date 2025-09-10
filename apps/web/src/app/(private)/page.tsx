@@ -136,9 +136,10 @@ export default async function Home() {
 				/>
 				
 				<ChartBarInteractive
-					monthlyChart={{
-						labels: data.data.charts.monthlyChart.labels ?? [],
-						data: data.data.charts.monthlyChart.data ?? []
+					variant="in-days"
+					dataChart={{
+						labels: data.data.charts.dailyChart.labels ?? [],
+						data: data.data.charts.dailyChart.data ?? []
 					}}
 				/>
 			</section>
@@ -168,8 +169,8 @@ export default async function Home() {
 					</TableBody>
 				</Table>
 			</section> */}
-			{/* <pre>{JSON.stringify(data,null, 4)}</pre> */}
 
+			<pre>{JSON.stringify(data.data, null, 2)}</pre>
         </div>
     )
 }
