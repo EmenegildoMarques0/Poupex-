@@ -17,13 +17,17 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@workspace/ui/components/chart"
+import { cn } from "@workspace/ui/lib/utils";
 
 interface ChartPieDonutProps {
-  data: { label: string; value: string }[]
-  config?: ChartConfig
+	title?: string;
+	description?: string;
+	data: { label: string; value: string }[]
+	config?: ChartConfig
+	className?: React.ComponentProps<"div">["className"]
 }
 
-export function ChartPieDonut({ data, config }: ChartPieDonutProps) {
+export function ChartPieDonut({ title = "Gastos por Categoria", description, data, config, className }: ChartPieDonutProps) {
 	const autoConfig: ChartConfig = data.reduce((acc, d, idx) => {
 		acc[d.label] = {
 			label: d.label,
@@ -41,10 +45,10 @@ export function ChartPieDonut({ data, config }: ChartPieDonutProps) {
 	}))
 
 	return (
-		<Card className="flex flex-col">
+		<Card className={cn("flex flex-col", className)}>
 			<CardHeader className="items-center pb-0">
-				<CardTitle>Gastos por Categoria</CardTitle>
-				<CardDescription />
+				<CardTitle>{title}</CardTitle>
+				{description && <CardDescription>{description}</CardDescription>}
 			</CardHeader>
 			<CardContent className="flex-1 pb-0">
 				<ChartContainer

@@ -18,15 +18,17 @@ import {
   ChartTooltipContent,
 } from "@workspace/ui/components/chart"
 import { useMemo } from "react"
+import { cn } from "@workspace/ui/lib/utils"
 
 interface ChartBarMixedProps {
     title: string
     description?: string
     data: { label: string; value: string | number }[]
     config?: ChartConfig
+    className?: React.ComponentProps<"div">["className"]
 }
 
-export function ChartBarMixed({ title, description, data, config }: ChartBarMixedProps) {
+export function ChartBarMixed({ title, description, data, config, className }: ChartBarMixedProps) {
  
     const autoConfig: ChartConfig = useMemo(() => {
         return data.reduce((acc, d, idx) => {
@@ -42,23 +44,34 @@ export function ChartBarMixed({ title, description, data, config }: ChartBarMixe
 
     const chartData = useMemo(
         () =>
-            data.map((d, idx) => ({
-                name: d.label,
-                value: Number(d.value) || 0,
-                fill: chartConfig[d.label]?.color ?? `var(--chart-${idx + 1})`,
-            })),
+            data.map((d, idx) => {
+                const value = Number(d.value);
+                if (isNaN(value)) {
+                    console.warn(`Valor inválido para ${d.label}: ${d.value}`);
+                    return {
+                        name: d.label,
+                        value: 0,
+                        fill: chartConfig[d.label]?.color ?? `var(--chart-${idx + 1})`,
+                    };
+                }
+                return {
+                    name: d.label,
+                    value,
+                    fill: chartConfig[d.label]?.color ?? `var(--chart-${idx + 1})`,
+                };
+            }),
         [data, chartConfig]
-    )
+    );
 
     return (
-        <Card>
+        <Card className={cn("", className)}>
             <CardHeader>
                 <CardTitle>{title}</CardTitle>
                 {description && <CardDescription>{description}</CardDescription>}
             </CardHeader>
             <CardContent>
                 <ChartContainer config={chartConfig}>
-                    <ResponsiveContainer width="100%" height={300}>
+                    {/* <ResponsiveContainer width="100%" height="100%"> */}
                         <BarChart
                             accessibilityLayer
                             data={chartData}
@@ -99,7 +112,7 @@ export function ChartBarMixed({ title, description, data, config }: ChartBarMixe
                             ))}
                         </Bar>
                         </BarChart>
-                    </ResponsiveContainer>
+                    {/* </ResponsiveContainer> */}
                 </ChartContainer>
             </CardContent>
         </Card>

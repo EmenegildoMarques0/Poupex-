@@ -170,7 +170,7 @@ export default async function Home() {
 				</Table>
 			</section> */}
 
-			<pre>{JSON.stringify(data.data, null, 2)}</pre>
+			{/* <pre>{JSON.stringify(data.data, null, 2)}</pre> */}
         </div>
     )
 }

@@ -15,6 +15,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@workspace/ui/components/chart"
+import { cn } from "@workspace/ui/lib/utils"
 
 const chartConfig = {
 	value: {
@@ -30,9 +31,10 @@ interface ChartBarInteractiveProps {
 		labels: string[]
 		data: (string | number)[]
 	}
-  title?: string
-  description?: string
-  variant?: Variant
+	title?: string
+	description?: string
+	variant?: Variant
+	className?: React.ComponentProps<"div">["className"]
 }
 
 export function ChartBarInteractive({
@@ -40,6 +42,7 @@ export function ChartBarInteractive({
 	title,
 	description,
 	variant = "in-months",
+	className
 }: ChartBarInteractiveProps) {
 	const chartData = React.useMemo(() => {
 		return dataChart.labels.map((label, idx) => {
@@ -94,7 +97,7 @@ export function ChartBarInteractive({
 							: "Últimos meses")
 
 	return (
-		<Card className="py-0 md:col-span-2">
+		<Card className={cn("py-0 md:col-span-2", className)}>
 			<CardHeader className="flex flex-col items-stretch border-b !p-0 sm:flex-row">
 				<div className="flex flex-1 flex-col justify-center gap-1 px-6 pt-4 pb-3 sm:!py-0">
 					<CardTitle>{autoTitle}</CardTitle>

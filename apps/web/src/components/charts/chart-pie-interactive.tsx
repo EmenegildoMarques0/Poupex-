@@ -25,6 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@workspace/ui/components/select"
+import { cn } from "@workspace/ui/lib/utils"
 
 export const description = "An interactive pie chart"
 
@@ -33,9 +34,10 @@ interface ChartPieInteractiveProps {
     description?: string
     data: { label: string; value: string | number }[]
     config?: ChartConfig
+    className?: React.ComponentProps<"div">["className"]
 }
 
-export function ChartPieInteractive({ title, description, data, config }: ChartPieInteractiveProps) {
+export function ChartPieInteractive({ title, description, data, config, className }: ChartPieInteractiveProps) {
     const autoConfig: ChartConfig = React.useMemo(() => {
         return data.reduce((acc, d, idx) => {
             acc[d.label] = {
@@ -69,7 +71,7 @@ export function ChartPieInteractive({ title, description, data, config }: ChartP
     const categories = React.useMemo(() => data.map((item) => item.label), [])
 
     return (
-        <Card data-chart={id} className="flex flex-col">
+        <Card data-chart={id} className={cn("flex flex-col", className)}>
             <ChartStyle id={id} config={chartConfig} />
             <CardHeader className="flex-row items-start space-y-0 pb-0">
                 <div className="grid gap-1">

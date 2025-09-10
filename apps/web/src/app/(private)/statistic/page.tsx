@@ -54,6 +54,7 @@ export default async function StatisticPage() {
                     labels: data.data.charts.monthlyChart.labels ?? [],
 					data: data.data.charts.monthlyChart.data ?? []
                 }}
+                className="md:col-span-2 w-full h-[400px]"
             />
 
             <ChartBarMixed 
@@ -63,6 +64,7 @@ export default async function StatisticPage() {
                     value: String(data?.data?.charts?.categoryChart?.data?.[idx] ?? 0)
                 }))}
                 config={myConfig}
+                className="max-md:col-span-2 w-full h-[400px]"
             />
 
             <ChartPieInteractive 
@@ -72,6 +74,7 @@ export default async function StatisticPage() {
                     value: String(data?.data?.charts?.categoryChart?.data?.[idx] ?? 0)
                 }))}
                 config={myConfig}
+                className="max-md:col-span-2 w-full h-[400px]"
             />
             
             <Card className="flex flex-col max-md:col-span-2">
