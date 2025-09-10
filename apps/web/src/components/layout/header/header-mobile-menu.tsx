@@ -36,11 +36,11 @@ export function HeaderMobileMenu() {
                         ) : (
                             <>
                                 <AvatarUser name={session.name} />
-                                <div>
+                                <div className="flex-1">
                                     <span className="block text-sm">{session.name}</span>
                                     <span className="block text-xs text-neutral-500">{session.email}</span>
                                 </div>
-                                <Button type="button" size="icon" variant="outline" onClick={signOut}>
+                                <Button type="button" size="icon" variant="outline" onClick={signOut} className="mr-2">
                                     <LogOut />
                                 </Button>
                             </>
