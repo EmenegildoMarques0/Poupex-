@@ -190,15 +190,15 @@ export function TableListCosts({ data }: TableListCostsProps) {
 					</TableBody>
 				</Table>
 			</div>
-			<div className="grid min-sm:grid-cols-2 gap-4 items-stretch">
+			<div className="grid min-sm:grid-cols-2 gap-4 items-stretch md:hidden">
 				{table.getRowModel().rows.length ? (
 					table.getRowModel().rows.map(row =>(
 						<CostCard key={row.id} cost={row.original} />
 					))
 				) : (
-					<div className="flex flex-col items-center gap-2 text-muted-foreground">
+					<div className="flex flex-col min-sm:col-span-2 min-h-80 justify-center select-none items-center gap-2 text-muted-foreground">
 						<SearchX size={32} />
-						<span>Nenhum gasto encontrado</span>
+						<span className="text-center">Nenhum gasto encontrado</span>
 					</div>
 				)}
 			</div>
