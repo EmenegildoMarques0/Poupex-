@@ -1,4 +1,4 @@
-import { formatDistance, format } from "date-fns";
+import { formatDistance, format, addDays } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
 /**
@@ -20,6 +20,19 @@ export function formatDate(date: string | Date): string {
  */
 
 export function formatDateFull(input: Date | string): string {
-  const date = input instanceof Date ? input : new Date(input);
-  return format(date, "dd 'de' MMMM 'de' yyyy", { locale: ptBR });
+	const date = input instanceof Date ? input : new Date(input);
+	return format(date, "dd 'de' MMMM 'de' yyyy", { locale: ptBR });
+}
+
+
+/**
+ * Recebe um número de 1 a 7 e retorna o nome do dia da semana em pt-BR
+ * 1 = segunda-feira … 7 = domingo
+ * @param n como Number
+ */
+
+export function getDayOfWeek(n: number): string {
+	const baseMonday = new Date(2025, 8, 1); // 1 de setembro 2025 é segunda-feira
+	const d = addDays(baseMonday, n - 1);
+	return format(d, 'EEEE', { locale: ptBR });
 }
