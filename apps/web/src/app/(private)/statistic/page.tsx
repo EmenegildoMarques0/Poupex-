@@ -50,7 +50,7 @@ export default async function StatisticPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <ChartBarInteractive 
                 title="Evolução Mensal"
-                monthlyChart={{
+                dataChart={{
                     labels: data.data.charts.monthlyChart.labels ?? [],
 					data: data.data.charts.monthlyChart.data ?? []
                 }}
