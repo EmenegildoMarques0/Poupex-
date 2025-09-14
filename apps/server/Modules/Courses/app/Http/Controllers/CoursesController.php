@@ -15,32 +15,37 @@ class CoursesController extends Controller
      */
     public function index()
     {
-        $courses = Course::with('lessons')->get(); // Carrega aulas relacionadas
-        return response()->json($courses);
+         $courses = Course::with('lessons')
+        ->withCount('lessons')         
+        ->get();
+
+    return response()->json($courses);
     }
 
     /**
      * Store a newly created course in storage.
      */
-    public function store(Request $request)
-    {
-        //dd($request->all());
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'thumbnail' => 'nullable|file|image|mimes:jpeg,png,jpg|max:2048', // Upload de imagem (opcional)
-            'is_public' => 'boolean',
-        ]);
+   public function store(Request $request)
+{
+    $validated = $request->validate([
+        'title' => 'required|string|max:255',
+        'description' => 'required|string',
+        'thumbnail' => 'nullable|file|image|mimes:jpeg,png,jpg|max:2048',
+        'is_public' => 'boolean',
+        'level' => 'required|in:beginner,intermediate,advanced',
+    ]);
 
-        // Handle thumbnail upload, if provided
-        if ($request->hasFile('thumbnail')) {
-            $validated['thumbnail'] = $request->file('thumbnail')->store('thumbnails', 'public');
-        }
-
-        $course = Course::create(array_merge($validated, ['user_id' => Auth::id()]));
-
-        return response()->json($course, 201);
+    // Handle thumbnail upload, if provided
+    if ($request->hasFile('thumbnail')) {
+        $validated['thumbnail'] = $request->file('thumbnail')->store('thumbnails', 'public');
     }
+
+    $course = Course::create(array_merge($validated, [
+        'user_id' => Auth::id(),
+    ]));
+
+    return response()->json($course, 201);
+}
 
     /**
      * Display the specified course.

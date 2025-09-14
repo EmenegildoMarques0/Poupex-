@@ -20,6 +20,7 @@ class Course extends Model
         'thumbnail',
         'user_id',
         'is_public',
+        'level',
     ];
 
     // Relacionamento: Um curso pertence a um usuário
