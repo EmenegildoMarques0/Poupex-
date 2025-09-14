@@ -11,7 +11,7 @@ import {
 	useReactTable,
 	type VisibilityState,
 } from "@tanstack/react-table";
-import { ChevronDown, SearchX } from "lucide-react";
+import { ChevronDown, Info, SearchX } from "lucide-react";
 import { parseAsInteger, useQueryState } from "nuqs";
 import * as React from "react";
 
@@ -34,6 +34,7 @@ import {
 import { columns } from "./columns";
 import { useSearchColumnFilter } from "@/hooks/search-column-filter";
 import { Costs } from "@/@types/costs.type";
+import { CostCard } from "../../card-cost";
 
 interface TableListCostsProps {
 	data: Costs[]
@@ -85,22 +86,22 @@ export function TableListCosts({ data }: TableListCostsProps) {
 		},
 	});
 
-	const { search, setSearch } = useSearchColumnFilter(table, "category");
+	const { search, setSearch } = useSearchColumnFilter(table, "description");
 
 	return (
 		<div className="w-full">
 			<div className="flex items-center justify-between gap-4 py-4">
-				<h1 className="text-xl font-semibold">Lista de Gastos</h1>
+				<h1 className="text-lg md:text-xl font-semibold text-nowrap">Lista de Gastos</h1>
 				<div className="flex items-center gap-4">
 					<Input
-						placeholder="Filtrar categoria..."
+						placeholder="Filtrar aqui..."
 						value={search}
 						onChange={(e) => setSearch(e.target.value)}
 						className="max-w-sm"
 					/>
 
 					<DropdownMenu>
-						<DropdownMenuTrigger asChild>
+						<DropdownMenuTrigger asChild className="max-md:hidden" >
 							<Button variant="outline" className="ml-auto">
 								Colunas <ChevronDown className="ml-1 h-4 w-4" />
 							</Button>
@@ -126,7 +127,7 @@ export function TableListCosts({ data }: TableListCostsProps) {
 				</div>
 			</div>
 
-			<div className="rounded-md border">
+			<div className="rounded-md border max-md:hidden">
 				<Table>
 					<TableHeader>
 						{table.getHeaderGroups().map((group) => (
@@ -189,13 +190,27 @@ export function TableListCosts({ data }: TableListCostsProps) {
 					</TableBody>
 				</Table>
 			</div>
+			<div className="grid min-sm:grid-cols-2 gap-4 items-stretch md:hidden">
+				{table.getRowModel().rows.length ? (
+					table.getRowModel().rows.map(row =>(
+						<CostCard key={row.id} cost={row.original} 
+							
+						/>
+					))
+				) : (
+					<div className="flex flex-col min-sm:col-span-2 min-h-80 justify-center select-none items-center gap-2 text-muted-foreground">
+						<SearchX size={32} />
+						<span className="text-center">Nenhum gasto encontrado</span>
+					</div>
+				)}
+			</div>
 
 			<div className="flex items-center justify-between py-4 text-sm text-muted-foreground">
-				<span>
+				{/* <span>
 					{table.getFilteredSelectedRowModel().rows.length} de{" "}
 					{table.getFilteredRowModel().rows.length} linha(s)
 					selecionada(s).
-				</span>
+				</span> */}
 				<div className="space-x-2">
 					<Button
 						variant="outline"

@@ -32,6 +32,25 @@
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
+
+  --chart-6:  oklch(0.700 0.210 10.000);   /* vermelho */
+  --chart-7:  oklch(0.620 0.180 290.000);  /* roxo */
+  --chart-8:  oklch(0.550 0.160 140.000);  /* verde */
+  --chart-9:  oklch(0.780 0.180 100.000);  /* verde claro */
+  --chart-10: oklch(0.430 0.100 260.000);  /* azul escuro */
+
+  --chart-11: oklch(0.680 0.150 45.000);   /* laranja */
+  --chart-12: oklch(0.800 0.140 75.000);   /* amarelo */
+  --chart-13: oklch(0.580 0.160 200.000);  /* azul */
+  --chart-14: oklch(0.500 0.140 315.000);  /* rosa */
+  --chart-15: oklch(0.740 0.180 170.000);  /* verde água */
+
+  --chart-16: oklch(0.610 0.150 35.000);   /* terracota */
+  --chart-17: oklch(0.780 0.170 95.000);   /* lima */
+  --chart-18: oklch(0.490 0.120 280.000);  /* azul roxo */
+  --chart-19: oklch(0.690 0.150 5.000);    /* vermelho claro */
+  --chart-20: oklch(0.810 0.130 60.000);   /* amarelo claro */
+
   --radius: 0.625rem;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);

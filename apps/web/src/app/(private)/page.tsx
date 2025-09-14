@@ -1,5 +1,5 @@
 import { CustomCard, CustomCardContent, CustomCardIcon } from "@/components/layout/custom-card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@workspace/ui/components/table";
+// import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@workspace/ui/components/table";
 import { Calendar } from "lucide-react";
 import {
 	Select,
@@ -10,6 +10,12 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@workspace/ui/components/select";
+import { cookies } from "next/headers";
+import { ResponseStatistic } from "@/@types/statistic.type";
+import { ChartPieDonut } from "@/components/charts/chart-pie-donut";
+import { ChartConfig } from "@workspace/ui/components/chart";
+import { ChartBarInteractive } from "@/components/charts/chart-bar-interactive";
+import { NotAuthenticatedSection } from "@/components/layout/not-authenticated-section";
 
 const METRICS_CARD_ITEMS = [
 	{
@@ -35,7 +41,41 @@ const METRICS_CARD_ITEMS = [
 	},
 ]
 
-export default function Home() {
+export default async function Home() {
+	const token = (await cookies()).get("ppx-auth.session-token")?.value;
+		
+	if (!token) {
+		return <NotAuthenticatedSection />;
+	}
+	
+	const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/stats`;
+
+	const response = await fetch(API_URL, {
+		method: "GET",
+		headers: {
+			Authorization: `Bearer ${token}`,
+		},
+		// cache: "no-store",
+		next: {
+			tags: ["get-statistic"],
+			revalidate: 60 // 01 min
+		}
+	});
+
+	if (!response.ok) {
+		console.error(`HTTP error! status: ${response.status}`);
+		return <p>Erro ao carregar os dados</p>;
+	}
+
+	const data: ResponseStatistic = await response.json();
+	const myConfig: ChartConfig = data.data.charts.categoryChart.labels.reduce((acc, label, idx) => {
+		acc[label] = {
+			label,
+			color: `var(--chart-${idx + 1})`,
+		}
+		return acc
+	}, {} as ChartConfig)
+
     return (
         <div className="space-y-4">
             <div>
@@ -76,19 +116,35 @@ export default function Home() {
 							/>
 							<CustomCardContent
 								title={item.title}
-								value={`${item.value} kz`.toString()}
+								value={`${data.data.totals[idx === 0 ? "week" : idx === 1 ? "month" : "total" ]}`.toString()}
 								description={item.description}
+								     
 							/>
 						</CustomCard.CustomCardRoot>
 					))}
 				</div>
 			</section>
-			<section className="grid md:grid-cols-2 gap-4">
-				<div className="p-4 min-h-96 rounded-xl bg-neutral-50 dark:bg-neutral-900">Gráfico 1</div>
-				<div className="p-4 min-h-96 rounded-xl bg-neutral-50 dark:bg-neutral-900">Gráfico 2</div>
+			<section className="grid md:grid-cols-3 gap-4">
+				<ChartPieDonut
+					data={
+						(data?.data?.charts?.categoryChart?.labels ?? []).map((label, idx) => ({
+							label,
+							value: String(data?.data?.charts?.categoryChart?.data?.[idx] ?? 0)
+						}))
+					}
+					config={myConfig}
+				/>
+				
+				<ChartBarInteractive
+					variant="in-days"
+					dataChart={{
+						labels: data.data.charts.dailyChart.labels ?? [],
+						data: data.data.charts.dailyChart.data ?? []
+					}}
+				/>
 			</section>
 
-			<section className="p-4 space-y-4 min-h-96 rounded-xl bg-neutral-50 dark:bg-neutral-900">
+			{/* <section className="p-4 space-y-4 min-h-96 rounded-xl bg-neutral-50 dark:bg-neutral-900">
 				<div>
 					<h1 className="text-xl font-bold">Últimos Gastos</h1>
 				</div>
@@ -112,7 +168,9 @@ export default function Home() {
 						</TableRow>
 					</TableBody>
 				</Table>
-			</section>
+			</section> */}
+
+			{/* <pre>{JSON.stringify(data.data, null, 2)}</pre> */}
         </div>
     )
 }

@@ -11,6 +11,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@workspace/ui/components/dialog";
+import { useState } from "react";
 
 interface UpdateDialogProps {
 children: React.ReactNode;
@@ -19,16 +20,18 @@ children: React.ReactNode;
 }
 
 export function UpdateDialog({ children: trigger, data, onUpdate }: UpdateDialogProps) {
+	const [open, setOpen] = useState(false);
 	const onSubmit = async (formData: Partial<RegisterCostFormValues>) => {
 		const payload = { ...formData, id: data.id };
 
 		if (onUpdate) {
 			await onUpdate(payload);
+			setOpen(false)
 		}
 	};
 
   return (
-		<Dialog>
+		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>{trigger}</DialogTrigger>
 			<DialogContent>
 				<DialogHeader>

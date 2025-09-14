@@ -1,3 +1,6 @@
+import { Costs } from "@/@types/costs.type";
+import { CostCard } from "@/components/layout/card-cost";
+import { NotAuthenticatedSection } from "@/components/layout/not-authenticated-section";
 import { TableListCosts } from "@/components/layout/tables/costs";
 import { cookies } from "next/headers";
 
@@ -5,7 +8,7 @@ export default async function CostsPage() {
     const token = (await cookies()).get("ppx-auth.session-token")?.value;
     
     if (!token) {
-        return <p>Não autenticado</p>;
+        return <NotAuthenticatedSection />;
     }
     
     const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/costs`;
@@ -15,7 +18,6 @@ export default async function CostsPage() {
         headers: {
             Authorization: `Bearer ${token}`,
         },
-        // cache: "no-store",
         next: {
             tags: ["get-costs"],
             revalidate: 60 // 01 min
@@ -27,7 +29,7 @@ export default async function CostsPage() {
         return <p>Erro ao carregar os dados</p>;
     }
 
-    const data = await response.json();
+    const data = await response.json() as Costs[];
 
     return <TableListCosts data={data} />
 }

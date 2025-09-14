@@ -1,84 +1,137 @@
+import { ResponseStatistic } from "@/@types/statistic.type";
+import { ChartBarInteractive } from "@/components/charts/chart-bar-interactive";
+import { ChartBarMixed } from "@/components/charts/chart-bar-mixed";
+import { ChartPieInteractive } from "@/components/charts/chart-pie-interactive";
+import { NotAuthenticatedSection } from "@/components/layout/not-authenticated-section";
+import { InfoCard } from "@/components/layout/statistic/info-card";
+import { getDayOfWeek } from "@/lib/formats/format-date";
 import { Badge } from "@workspace/ui/components/badge";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@workspace/ui/components/card";
+import { ChartConfig } from "@workspace/ui/components/chart";
+import { cookies } from "next/headers";
 
-export default function StatisticPage() {
+export default async function StatisticPage() {
+    const token = (await cookies()).get("ppx-auth.session-token")?.value;
+            
+    if (!token) {
+        return <NotAuthenticatedSection />;
+    }
+        
+    const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/stats`;
+    
+    const response = await fetch(API_URL, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+        // cache: "no-store",
+        next: {
+            tags: ["get-statistic"],
+            revalidate: 60 // 01 min
+        }
+    });
+    
+    if (!response.ok) {
+        console.error(`HTTP error! status: ${response.status}`);
+        return <p>Erro ao carregar os dados</p>;
+    }
+    
+    const data: ResponseStatistic = await response.json();
+
+    const myConfig: ChartConfig = data.data.charts.categoryChart.labels.reduce((acc, label, idx) => {
+        acc[label] = {
+            label,
+            color: `var(--chart-${idx + 1})`,
+        }
+        return acc
+    }, {} as ChartConfig)
+
     return (
-        <div className="grid md:grid-cols-2 gap-4">
-            <section className="p-4 col-span-2 space-y-4 min-h-96 rounded-xl bg-neutral-50 dark:bg-neutral-900">
-				<div>
-					<h1 className="text-xl font-bold">Evolução Mensal</h1>
-				</div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <ChartBarInteractive 
+                title="Evolução Mensal"
+                dataChart={{
+                    labels: data.data.charts.monthlyChart.labels ?? [],
+					data: data.data.charts.monthlyChart.data ?? []
+                }}
+                className="col-span-2 md:col-span-2 w-full min-h-[400px]"
+            />
 
-                Grafico 1
-            </section>
+            <ChartBarMixed 
+                title="Distribuição por Categoria" 
+                data={(data?.data?.charts?.categoryChart?.labels ?? []).map((label, idx) => ({
+                    label,
+                    value: String(data?.data?.charts?.categoryChart?.data?.[idx] ?? 0)
+                }))}
+                config={myConfig}
+                className="max-md:col-span-2 w-full min-h-[400px]"
+            />
 
-            <section className="p-4 space-y-4 min-h-96 rounded-xl bg-neutral-50 dark:bg-neutral-900">
-				<div>
-					<h1 className="text-xl font-bold">Distribuição por Categoria</h1>
-				</div>
-                Gráfico 2
-            </section>
-            <section className="p-4 space-y-4 min-h-96 rounded-xl bg-neutral-50 dark:bg-neutral-900">
-				<div>
-					<h1 className="text-xl font-bold">Top Categorias</h1>
-				</div>
-                Gráfico 3
-            </section>
+            <ChartPieInteractive 
+                title="Top Categorias"
+                data={(data?.data?.charts?.categoryChart?.labels ?? []).map((label, idx) => ({
+                    label,
+                    value: String(data?.data?.charts?.categoryChart?.data?.[idx] ?? 0)
+                }))}
+                config={myConfig}
+                className="max-md:col-span-2 w-full min-h-[400px]"
+            />
+            
+            <Card className="flex flex-col max-md:col-span-2">
+                <CardHeader className="items-center pb-0">
+                    <CardTitle>Médias e Tendências</CardTitle>
+                    <CardDescription />
+                </CardHeader>
+                <CardContent className="flex-1 pb-0 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <InfoCard
+                        title="Média Diária"
+                        value={data.data.averages.daily}
+                        subtitle="Últimos 30 dias"
+                    />
+                    <InfoCard
+                        title="Média Mensal"
+                        value={data.data.averages.monthly}
+                        subtitle="Últimos 6 meses"
+                    />
+                    <InfoCard
+                        title="Maior Categoria"
+                        value={`${data.data.top.category.match(/\(.*\)/)?.[0]}`}
+                        badge={data.data.top.category.split("(")[0]}
+                        subtitle="Mês atual"
+                    />
+                    <InfoCard
+                        title="Maior Categoria"
+                        value={`${data.data.top.day.match(/\(.*\)/)?.[0]}`}
+                        badge={getDayOfWeek(Number(data.data.top.day.split("(")[0]))}
+                        subtitle="Últimos 30 dias"
+                    />
+                </CardContent>
+            </Card>
 
-            <section className="p-4 space-y-4 rounded-xl bg-neutral-50 dark:bg-neutral-900">
-				<div>
-					<h1 className="text-xl font-bold">Médias e Tendências</h1>
-				</div>
-                <div className="grid md:grid-cols-2 gap-4">
-                    <section className="p-4 flex flex-col items-center justify-center gap-2 col-span-2 md:col-span-1 min-h-20 rounded-xl bg-neutral-100 dark:bg-neutral-800">
-                        <span>Média Diária</span>
-                        <span className="text-2xl font-bold">187,80 Kz</span>
-                        <span className="text-xs">Últimos 30 dias</span>
-                    </section>
-                    <section className="p-4 flex flex-col items-center justify-center gap-2 col-span-2 md:col-span-1 min-h-20 rounded-xl bg-neutral-100 dark:bg-neutral-800">
-                        <span>Média Mensal</span>
-                        <span className="text-2xl font-bold">939,00 Kz</span>
-                        <span className="text-xs">Últimos 6 meses</span>
-                    </section>
-                    <section className="p-4 flex flex-col items-center justify-center gap-2 col-span-2 md:col-span-1 min-h-20 rounded-xl bg-neutral-100 dark:bg-neutral-800">
-                        <div className="space-x-4">
-                        <span>Maior Categoria</span>
-                        <Badge>Moradia</Badge>
-                        </div>
-                        <span className="text-2xl font-bold">(5 000,00 Kz)</span>
-                        <span className="text-xs">Mês atual</span>
-                    </section>
-                    <section className="p-4 flex flex-col items-center justify-center gap-2 col-span-2 md:col-span-1 min-h-20 rounded-xl bg-neutral-100 dark:bg-neutral-800">
-                        <div className="space-x-4">
-                            <span>Dia Mais Gastador</span>
-                        <Badge>sexta-feira</Badge>
-                        </div>
-                        <span className="text-2xl font-bold">(5 000,00 Kz)</span>
-                        <span className="text-xs">Últimos 30 dias</span>
-                    </section>
-                </div>
-            </section>
-            <section className="p-4 space-y-4 rounded-xl bg-neutral-50 dark:bg-neutral-900">
-				<div>
-					<h1 className="text-xl font-bold">Previsões e Comparativos</h1>
-				</div>
-                <div className="grid md:grid-cols-2 gap-4">
-                    <section className="p-4 flex flex-col items-center justify-center gap-2 col-span-2 md:col-span-1 min-h-20 rounded-xl bg-neutral-100 dark:bg-neutral-800">
-                        <span>Previsão Mês</span>
-                        <span className="text-2xl font-bold">7 938,82 Kz</span>
-                        <span className="text-xs">Baseado nos gastos atuais</span>
-                    </section>
-                    <section className="p-4 flex flex-col items-center justify-center gap-2 col-span-2 md:col-span-1 min-h-20 rounded-xl bg-neutral-100 dark:bg-neutral-800">
-                        <span>Comparativo</span>
-                        <span className="text-2xl font-bold">0.0%</span>
-                        <span className="text-xs">vs Mês Anterior</span>
-                    </section>
-                    <section className="p-4 flex flex-col items-center justify-center gap-2 col-span-2 min-h-20 rounded-xl bg-neutral-100 dark:bg-neutral-800">
-                         <span>Economia Mensal</span>
-                        <span className="text-2xl font-bold">93,90 Kz</span>
-                        <span className="text-xs">Baseado na média dos últimos 6 meses</span>
-                    </section>
-                </div>
-            </section>
+            <Card className="flex flex-col max-md:col-span-2">
+                <CardHeader className="items-center pb-0">
+                    <CardTitle>Previsões e Comparativos</CardTitle>
+                    <CardDescription />
+                </CardHeader>
+                <CardContent className="flex-1 pb-0 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <InfoCard
+                        title="Previsão Mês"
+                        value={data.data.forecast.month}
+                        subtitle="Baseado nos gastos atuais"
+                    />
+                    <InfoCard
+                        title="Comparativo"
+                        value={data.data.forecast.comparison}
+                        subtitle="vs Mês Anterior"
+                    />
+                    <InfoCard
+                        title="Economia Mensal"
+                        value={data.data.forecast.savings}
+                        subtitle="Baseado na média dos últimos 6 meses"
+                        className="md:col-span-2"
+                    />
+                </CardContent>
+            </Card>
         </div>
     )
 }

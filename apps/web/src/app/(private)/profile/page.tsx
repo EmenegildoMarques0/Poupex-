@@ -1,7 +1,7 @@
-import { ProfileHeader } from "@/components/layout/profile/profile-header"
-import { ProfileInfoCard } from "@/components/layout/profile/profile-info-card"
-import { AccountActionsCard } from "@/components/layout/profile/account-actions-card"
-import { PreferencesCard } from "@/components/layout/profile/preferences-card"
+import { ProfileHeader } from "@/components/layout/profile/profile-header";
+import ProfileInfoCard from "@/components/layout/profile/profile-info-card";
+import { AccountActionsCard } from "@/components/layout/profile/account-actions-card";
+import { PreferencesCard } from "@/components/layout/profile/preferences-card";
 
 export default function ProfilePage() {
     return (

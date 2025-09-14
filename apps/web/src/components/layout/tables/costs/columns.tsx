@@ -118,8 +118,7 @@ export const columns: ColumnDef<Costs>[] = [
 					<DropdownMenuContent align="end">
 						<DropdownMenuLabel>Acções</DropdownMenuLabel>
 							<DeleteDialog onConfirm={async (id) => {
-								if (!token) throw new Error("Não autorizado.");
-								const res = await deleteCostAction(id, token);
+								const res = await deleteCostAction(id);
 								
 								if (!res?.success) {
 									toast.error("Falha ao deletar gasto.", {
@@ -136,9 +135,8 @@ export const columns: ColumnDef<Costs>[] = [
 						</DropdownMenuItem>
                             </DeleteDialog>
 							<UpdateDialog data={cost} onUpdate={async (formData) => {
-								if (!token) throw new Error("Não autorizado.");
 								if (!formData.id) throw new Error("Todos os campos devem ser preechidos.");
-								const res = await updateCostAction(formData.id, formData, token);
+								const res = await updateCostAction(formData.id, formData);
 								
 								if (!res?.success) {
 									toast.error("Falha ao actualizar gasto.", {
@@ -147,16 +145,16 @@ export const columns: ColumnDef<Costs>[] = [
 									throw new Error(res?.error);
 								}
 								
-								toast.success("Gasto apagado com sucesso.")
+								toast.success("Gasto actualizado com sucesso.")
 								}
 							}>
-						<DropdownMenuItem  onSelect={(e) => e.preventDefault()}>
+						<DropdownMenuItem onSelect={(e) => e.preventDefault()}>
                                 <Edit />
 							<span>Alterar</span>
 						</DropdownMenuItem>
                             </UpdateDialog>
 							<InfoDialog data={cost}>
-						<DropdownMenuItem  onSelect={(e) => e.preventDefault()}>
+						<DropdownMenuItem onSelect={(e) => e.preventDefault()}>
                                 <Info />
 							<span>Mais detalhes</span>
 						</DropdownMenuItem>

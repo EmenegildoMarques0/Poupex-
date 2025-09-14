@@ -1,10 +1,14 @@
 "use server";
 
 import { revalidateTag } from "next/cache";
+import { cookies } from "next/headers";
 
 const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/v1`;
 
-export async function deleteCostAction(id: string | number, token: string) {
+export async function deleteCostAction(id: string | number) {
+    const store = await cookies()
+    const token = store.get("ppx-auth.session-token")?.value;
+
     if (!token) {
         console.error("Não autenticado");
         return; 
