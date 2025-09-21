@@ -14,13 +14,18 @@ export const NAV_LINKS = [
 		href: "/statistic",
 		label: "Estatísticas",
 	},
+	{
+		id: "4",
+		href: "/courses",
+		label: "Cursos",
+	},
 ]
 
 export const NAV_LINKS_MOBLE = [
-    ...NAV_LINKS,
-    {
-        id: "4",
-        href: "/profile",
-        label: "Definições de conta"
-    }
+	...NAV_LINKS,
+	{
+		id: "5",
+		href: "/profile",
+		label: "Definições de conta"
+	}
 ]

@@ -4,7 +4,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem,
 import Link from "next/link";
 import React from "react";
 import { AvatarUser } from "./avatar-user";
-import { LogOut, Settings } from "lucide-react";
+import { LogOut, Settings, Library } from "lucide-react";
 import { logoutAction } from "@/actions/auth/logout.action";
 
 interface AvatarProfileDialogProps {
@@ -18,11 +18,17 @@ interface AvatarProfileDialogProps {
 
 const Itens = [
     {
-        id: "10/12/2032",
+        id: "2996-05-01T18:32:49+01:00",
+        label: "Cursos",
+        icon: Library,
+        url: "/courses",
+    },
+    {
+        id: "2996-04-03T23:05:51+01:00",
         label: "Definições de conta",
         icon: Settings,
         url: "/profile",
-    }
+    },
 ]
 
 export function AvatarProfileDropdown({ data: user }: AvatarProfileDialogProps) {
