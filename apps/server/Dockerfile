@@ -3,11 +3,20 @@ FROM composer:2 AS build
 
 WORKDIR /var/www
 
+# Copia apenas os arquivos necessários para instalar dependências
 COPY composer.json composer.lock ./
 RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist --no-scripts; \
     if [ $? -ne 0 ]; then echo "Erro: Falha ao instalar dependências do Composer"; exit 1; fi
 
 COPY . .
+
+# Garante permissões corretas na etapa de build
+RUN mkdir -p /var/www/storage/logs && \
+    chown -R $(whoami):$(whoami) /var/www/storage /var/www/bootstrap/cache && \
+    chmod -R 775 /var/www/storage /var/www/bootstrap/cache && \
+    touch /var/www/storage/logs/laravel.log && \
+    chown $(whoami):$(whoami) /var/www/storage/logs/laravel.log && \
+    chmod 664 /var/www/storage/logs/laravel.log
 
 # Gera caches do Laravel com saída detalhada para depuração
 RUN php artisan config:cache 2> /var/www/storage/logs/config_cache.log; \
@@ -29,22 +38,27 @@ RUN apk add --no-cache nginx supervisor git unzip libzip-dev libpng-dev onigurum
 
 WORKDIR /var/www
 
+# Copia os arquivos da etapa de build
 COPY --from=build /var/www /var/www
 
-# Garante que storage/ e database/ sejam graváveis
-RUN mkdir -p /var/www/storage/logs && \
-    chown -R www-data:www-data storage bootstrap/cache; \
+# Garante que storage/ e database/ sejam graváveis pelo usuário www-data
+RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache; \
     if [ $? -ne 0 ]; then echo "Erro: Falha ao alterar permissões de storage/bootstrap"; exit 1; fi && \
-    chmod -R 775 storage bootstrap/cache; \
+    chmod -R 775 /var/www/storage /var/www/bootstrap/cache; \
     if [ $? -ne 0 ]; then echo "Erro: Falha ao definir permissões de storage/bootstrap"; exit 1; fi && \
-    mkdir -p storage; \
-    if [ $? -ne 0 ]; then echo "Erro: Falha ao criar diretório storage"; exit 1; fi && \
-    touch storage/database.sqlite; \
-    if [ $? -ne 0 ]; then echo "Erro: Falha ao criar arquivo database.sqlite"; exit 1; fi && \
-    chown www-data:www-data storage/database.sqlite; \
-    if [ $? -ne 0 ]; then echo "Erro: Falha ao alterar permissões do database.sqlite"; exit 1; fi && \
-    chmod 664 storage/database.sqlite; \
-    if [ $? -ne 0 ]; then echo "Erro: Falha ao definir permissões do database.sqlite"; exit 1; fi
+    touch /var/www/storage/logs/laravel.log; \
+    if [ $? -ne 0 ]; then echo "Erro: Falha ao criar laravel.log"; exit 1; fi && \
+    chown www-data:www-data /var/www/storage/logs/laravel.log; \
+    if [ $? -ne 0 ]; then echo "Erro: Falha ao alterar permissões do laravel.log"; exit 1; fi && \
+    chmod 664 /var/www/storage/logs/laravel.log; \
+    if [ $? -ne 0 ]; then echo "Erro: Falha ao definir permissões do laravel.log"; exit 1; fi && \
+    mkdir -p /var/www/storage/framework/sessions /var/www/storage/framework/views /var/www/storage/framework/cache; \
+    chown -R www-data:www-data /var/www/storage/framework; \
+    chmod -R 775 /var/www/storage/framework; \
+    if [ -f /var/www/storage/database.sqlite ]; then \
+        chown www-data:www-data /var/www/storage/database.sqlite; \
+        chmod 664 /var/www/storage/database.sqlite; \
+    fi
 
 COPY ./deploy/nginx.conf /etc/nginx/nginx.conf
 COPY ./deploy/supervisord.conf /etc/supervisord.conf
