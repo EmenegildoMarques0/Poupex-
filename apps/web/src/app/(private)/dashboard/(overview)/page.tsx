@@ -43,6 +43,15 @@ export default async function Overview() {
                         </DialogContent>
                     </Dialog>
 
+                    <div className="aspect-square w-full max-w-32 sm:max-w-36 md:max-w-44 border-2 rounded-xl bg-muted-background cursor-pointer hover:bg-muted/70 transition">
+                        <div className="min-h-44" />
+                        <div>
+
+                        </div>
+                    </div>
+
+
+
                     <pre>{JSON.stringify(courses, null, 2)}</pre>
                 </div>
             </section>
