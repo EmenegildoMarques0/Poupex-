@@ -1,7 +1,6 @@
 "use server"
 
 import { Course } from "@/@types/courses.type";
-import { revalidateTag } from "next/cache";
 import { cookies } from "next/headers";
 
 const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/v1`;
@@ -28,8 +27,6 @@ export async function getAllCourses(): Promise<InvalidFindAllCourses | ValidFind
         };
     }
     try {
-        console.log({ token });
-
         const res = await fetch(`${API_URL}/courses`, {
             method: "GET",
             headers: {
@@ -38,15 +35,14 @@ export async function getAllCourses(): Promise<InvalidFindAllCourses | ValidFind
             next: { tags: ["get-courses"] }
         });
 
-        console.log({ res });
-
-
         if (!res.ok) {
             const errorText = await res.text();
             throw new Error(`Erro ${res.status}: ${errorText}`);
         }
 
-        return { success: true, data: res };
+        const data = await res.json()
+
+        return { success: true, data };
     } catch (error) {
         console.error("Erro ao listar cursos:", error);
         return { success: false, error: "Erro ao listar cursos" };
