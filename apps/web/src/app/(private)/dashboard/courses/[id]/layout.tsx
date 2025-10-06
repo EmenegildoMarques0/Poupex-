@@ -6,13 +6,14 @@ import { CourseManagementSidebar } from "../../_components/course-management-sid
 
 interface CourseLayoutProps {
     children: React.ReactNode
-    params: {
+    params: Promise<{
         id: string
-    }
+    }>
 }
 
 export default async function CourseLayout({ children, params }: CourseLayoutProps) {
-    const course = await getCourseById(params.id)
+    const { id } = await params;
+    const course = await getCourseById(id)
 
     if (!course.success) {
         notFound()
@@ -22,7 +23,7 @@ export default async function CourseLayout({ children, params }: CourseLayoutPro
         <div className="flex flex-col h-full">
             <CourseHeader course={course.data} />
             <div className="flex flex-1 overflow-hidden">
-                <CourseManagementSidebar courseId={params.id} />
+                <CourseManagementSidebar courseId={id} />
                 <main className="flex-1 overflow-y-auto p-6 bg-background">{children}</main>
             </div>
         </div>

@@ -14,10 +14,10 @@ export interface Lesson {
 
 export const createLessonSchema = z.object({
     title: z.string().min(1, "Título é obrigatório"),
-    description: z.string().optional(),
+    description: z.string(),
     link: z.string().url("Link inválido"),
     order: z.number().min(1),
-    supporting_materials: z.array(z.string().url().optional()).default([]),
+    supporting_materials: z.array(z.instanceof(File)).optional(),
 })
 
 export type CreateLessonValues = z.infer<typeof createLessonSchema>;

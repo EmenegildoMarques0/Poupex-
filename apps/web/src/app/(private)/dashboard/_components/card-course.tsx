@@ -5,6 +5,7 @@ import { Card, CardContent } from "@workspace/ui//components/card"
 import { Badge } from "@workspace/ui//components/badge"
 import Link from "next/link"
 import { BookOpen } from "lucide-react"
+import { usePathname } from "next/navigation"
 
 interface CourseCardProps {
     data: Course
@@ -26,10 +27,11 @@ const levelConfig = {
 }
 
 export function CourseCard({ data: course }: CourseCardProps) {
+    const pathname = usePathname()
     const lessonsCount = course.lessons?.length || 0
     const levelInfo = levelConfig[course.level]
     return (
-        <Link href={`/dashboard/courses/${course.id}`} className="block">
+        <Link href={`${pathname.includes("dashboard") ? pathname + "/courses" : pathname}/${course.id}`} className="block">
             <Card
                 className="group aspect-square w-full overflow-hidden cursor-pointer p-0
                 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 

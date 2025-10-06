@@ -1,27 +1,16 @@
 "use client"
-
-import { useRouter } from "next/navigation"
-import { Plus, X } from "lucide-react"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useFieldArray, useForm } from "react-hook-form"
-
-import { Button } from "@workspace/ui/components/button"
-import { Input } from "@workspace/ui/components/input"
-import { Label } from "@workspace/ui/components/label"
-import { Textarea } from "@workspace/ui/components/textarea"
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@workspace/ui/components/dialog"
+import { createLessonSchema, CreateLessonValues } from "@/@types/lesson.types";
+import { addLessonInCourse } from "@/actions/courses/add-lesson-in-course";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@workspace/ui/components/button";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@workspace/ui/components/dialog";
 import { Form, FormField, FormItem, FormLabel, FormMessage } from "@workspace/ui/components/form"
-
-import { addLessonInCourse } from "@/actions/courses/add-lesson-in-course"
-import { createLessonSchema, CreateLessonValues } from "@/@types/lesson.types"
+import { Input } from "@workspace/ui/components/input";
+import { Label } from "@workspace/ui/components/label";
+import { Textarea } from "@workspace/ui/components/textarea";
+import { Plus, X } from "lucide-react";
+import { useFieldArray, useForm } from "react-hook-form"
+import { toast } from "sonner";
 
 interface LessonFormProps {
     courseId: number
@@ -29,41 +18,47 @@ interface LessonFormProps {
 }
 
 export function LessonForm({ courseId, nextOrder }: LessonFormProps) {
-    const router = useRouter()
-
     const form = useForm<CreateLessonValues>({
+        mode: "all",
         resolver: zodResolver(createLessonSchema),
         defaultValues: {
             title: "",
-            description: "",
             link: "",
+            description: "",
             order: nextOrder,
-            supporting_materials: [],
-        },
-    })
+            supporting_materials: []
+        }
+    });
 
-
-    const { fields, append, remove } = useFieldArray<CreateLessonValues, "supporting_materials">({
+    const { fields, append, remove } = useFieldArray({
         control: form.control,
         name: "supporting_materials",
+        rules: { maxLength: 50 }
     })
 
+    async function onSubmit(data: CreateLessonValues) {
+        const formData = new FormData();
 
+        formData.append("title", data.title);
+        formData.append("description", data.description);
+        formData.append("link", data.link);
+        formData.append("order", String(data.order));
+        data.supporting_materials?.forEach((file) => {
+            if (file instanceof File) {
+                formData.append("supporting_materials", file);
+            }
+        });
 
-    const onSubmit = async (data: CreateLessonValues) => {
-        const formData = new FormData()
-        formData.append("title", data.title)
-        formData.append("description", data.description || "")
-        formData.append("link", data.link)
-        formData.append("order", String(data.order))
+        const result = await addLessonInCourse(courseId, formData)
 
-        data.supporting_materials.forEach((mat, index) => {
-            if (mat.trim()) formData.append(`supporting_materials[${index}]`, mat)
-        })
+        if (!result.success) {
+            toast.error(result.error)
+            console.error("Error in CREATE-LESSON: ", result.error);
 
-        await addLessonInCourse(courseId, formData)
-        router.refresh()
-        form.reset({ ...form.getValues(), supporting_materials: [""] })
+            return;
+        }
+
+        toast.success("Aula criada com sucesso")
     }
 
     return (
@@ -77,7 +72,7 @@ export function LessonForm({ courseId, nextOrder }: LessonFormProps) {
 
             <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                    <form onSubmit={form.handleSubmit(onSubmit)}>
                         <DialogHeader>
                             <DialogTitle>Nova Aula</DialogTitle>
                             <DialogDescription>
@@ -86,7 +81,6 @@ export function LessonForm({ courseId, nextOrder }: LessonFormProps) {
                         </DialogHeader>
 
                         <div className="grid gap-4 py-4">
-                            {/* Título */}
                             <FormField
                                 control={form.control}
                                 name="title"
@@ -101,7 +95,6 @@ export function LessonForm({ courseId, nextOrder }: LessonFormProps) {
                                 )}
                             />
 
-                            {/* Link */}
                             <FormField
                                 control={form.control}
                                 name="link"
@@ -119,7 +112,6 @@ export function LessonForm({ courseId, nextOrder }: LessonFormProps) {
                                 )}
                             />
 
-                            {/* Descrição */}
                             <FormField
                                 control={form.control}
                                 name="description"
@@ -136,15 +128,16 @@ export function LessonForm({ courseId, nextOrder }: LessonFormProps) {
                                 )}
                             />
 
-                            {/* Materiais de Apoio */}
                             <div className="grid gap-2">
                                 <Label>Materiais de Apoio</Label>
 
                                 {fields.map((field, index) => (
                                     <div key={field.id} className="flex items-center gap-2">
                                         <Input
-                                            placeholder="URL do material (PDF, documento, etc.)"
-                                            {...form.register(`supporting_materials.${index}` as const)}
+                                            type="file"
+                                            accept="application/pdf"
+                                            multiple
+                                            {...form.register("supporting_materials")}
                                         />
                                         <Button
                                             type="button"
@@ -174,7 +167,6 @@ export function LessonForm({ courseId, nextOrder }: LessonFormProps) {
                                 </p>
                             </div>
 
-                            {/* Ordem */}
                             <FormField
                                 control={form.control}
                                 name="order"
@@ -183,7 +175,7 @@ export function LessonForm({ courseId, nextOrder }: LessonFormProps) {
                                         <FormLabel>
                                             Ordem <span className="text-destructive">*</span>
                                         </FormLabel>
-                                        <Input type="number" min={1} {...field} />
+                                        <Input type="number" min={nextOrder ?? 1} {...field} />
                                         <p className="text-xs text-muted-foreground">
                                             Posição da aula na sequência do curso
                                         </p>
@@ -192,12 +184,12 @@ export function LessonForm({ courseId, nextOrder }: LessonFormProps) {
                                 )}
                             />
                         </div>
-
                         <DialogFooter>
                             <Button type="submit">Criar Aula</Button>
                         </DialogFooter>
                     </form>
                 </Form>
+
             </DialogContent>
         </Dialog>
     )

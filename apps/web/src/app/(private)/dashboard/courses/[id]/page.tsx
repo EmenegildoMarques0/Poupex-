@@ -6,16 +6,15 @@ import { LessonsTable } from "../../_components/tables/lessons-table"
 import { notFound } from "next/navigation"
 
 interface CourseDetailPageProps {
-    params: {
-        id: string
-    }
+    params: Promise<{ id: string }>
 }
 
 export default async function CourseDetailPage({ params }: CourseDetailPageProps) {
-    if (!params.id) {
+    const courseId = await params;
+    if (!courseId) {
         notFound()
     }
-    const result = await getLessonsByCourse(params.id);
+    const result = await getLessonsByCourse(courseId.id);
 
     if (!result.success) {
         notFound()
@@ -30,7 +29,7 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
                     <h2 className="text-2xl font-bold tracking-tight">Aulas do Curso</h2>
                     <p className="text-muted-foreground">Gerencie as aulas e conteúdo do curso</p>
                 </div>
-                <LessonForm courseId={Number(params.id)} nextOrder={lessons.length + 1} />
+                <LessonForm courseId={Number(courseId.id)} nextOrder={lessons.length + 1} />
             </div>
 
             {lessons.length === 0 ? (
@@ -41,7 +40,7 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
                         <p className="text-sm text-muted-foreground mb-6 max-w-sm">
                             Comece adicionando a primeira aula do curso para disponibilizar conteúdo aos alunos
                         </p>
-                        <LessonForm courseId={Number(params.id)} nextOrder={1} />
+                        <LessonForm courseId={Number(courseId.id)} nextOrder={1} />
                     </CardContent>
                 </Card>
             ) : (

@@ -27,6 +27,7 @@ import {
 import { Input } from "@workspace/ui/components/input";
 import { Textarea } from "@workspace/ui/components/textarea";
 import { parseCookies } from "nookies";
+import { toast } from "sonner";
 
 const courseSchema = z.object({
     title: z.string().min(3, "O título é obrigatório"),
@@ -57,31 +58,27 @@ export function CourseForm() {
                 return;
             }
 
-            const thumbnail = file;
             const formData = new FormData();
-
             formData.append("title", data.title);
             formData.append("description", data.description || "");
             formData.append("level", data.level);
-            formData.append("is_public", String(data.is_public)); // ✅ "true" ou "false"
-            formData.append("thumbnail", thumbnail);
+            //formData.append("is_public", data.is_public);
+            //formData.append("thumbnail", file);
 
             const { "ppx-auth.session-token": token } = parseCookies();
 
             if (!token) {
                 console.error("Não autenticado");
-                return {
-                    success: false,
-                    error: "Não autenticado"
-                };
+                return toast.error("Sessão expirada. Faça login novamente.");
             }
 
-            const response = await fetch("/api/courses", {
+            const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/v1`;
+
+            const response = await fetch(`${API_URL}/courses`, {
                 method: "POST",
                 headers: {
                     Accept: "application/json",
                     Authorization: `Bearer ${token}`,
-                    "Content-Type": "multipart/form-data"
                 },
                 body: formData,
             });
@@ -91,17 +88,15 @@ export function CourseForm() {
                 throw new Error(errorText || "Falha ao criar curso");
             }
 
-            const result = await response.json();
-            console.log("✅ Curso criado:", result);
-
-            alert("Curso criado com sucesso!");
+            toast.success("Curso criado com sucesso!",);
             form.reset();
             setFile(null);
         } catch (error) {
             console.error("❌ Erro ao criar curso:", error);
-            alert("Erro ao criar o curso. Verifique os dados e tente novamente.");
+            toast.error("Erro ao criar o curso. Verifique os dados e tente novamente.");
         }
     };
+
 
     return (
         <Form {...form}>

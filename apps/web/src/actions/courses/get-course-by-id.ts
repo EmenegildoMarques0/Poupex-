@@ -32,7 +32,7 @@ export async function getCourseById(id: string): Promise<InvalidFindAllCourses |
             headers: {
                 Authorization: `Bearer ${token}`,
             },
-            next: { tags: ["get-courses"] }
+            next: { tags: ["get-one-lessons"] }
         });
 
         if (!res.ok) {
