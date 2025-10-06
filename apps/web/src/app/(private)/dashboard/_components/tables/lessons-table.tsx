@@ -22,6 +22,7 @@ import { deleteLesson } from "@/actions/lessons/delete-lesson"
 import { useRouter } from "next/navigation"
 import { formatDistanceToNow } from "date-fns"
 import { ptBR } from "date-fns/locale"
+import { formatDate } from "@/lib/formats/format-date"
 
 interface LessonsTableProps {
     lessons: Lesson[]
@@ -154,7 +155,7 @@ export function LessonsTable({ lessons }: LessonsTableProps) {
                                             <div className="relative w-16 h-10 rounded bg-muted flex-shrink-0 flex items-center justify-center overflow-hidden">
                                                 <div className="text-xs font-medium text-muted-foreground">#{lesson.order}</div>
                                             </div>
-                                            <div className="flex-1 min-w-0">
+                                            <div className="flex-1 min-w-0 max-w-[20rem]">
                                                 <p className="font-medium text-sm truncate mb-1">{lesson.title}</p>
                                                 {lesson.description && (
                                                     <p className="text-xs text-muted-foreground truncate">{lesson.description}</p>
@@ -163,7 +164,8 @@ export function LessonsTable({ lessons }: LessonsTableProps) {
                                         </div>
                                     </TableCell>
                                     <TableCell className="text-sm">
-                                        {lesson.supporting_materials.length > 0 ? (
+                                        {lesson.supporting_materials &&
+                                            lesson.supporting_materials.length > 0 ? (
                                             <Badge variant="secondary" className="gap-1">
                                                 <FileText className="h-3 w-3" />
                                                 {lesson.supporting_materials.length}
@@ -183,17 +185,14 @@ export function LessonsTable({ lessons }: LessonsTableProps) {
                                             <ExternalLink className="h-3 w-3" />
                                         </a>
                                     </TableCell>
-                                    <TableCell className="text-sm text-muted-foreground">
-                                        {formatDistanceToNow(new Date(lesson.created_at), {
-                                            addSuffix: true,
-                                            locale: ptBR,
-                                        })}
+                                    <TableCell className="text-sm text-muted-foreground first-letter:uppercase">
+                                        {formatDate(lesson.created_at)}
                                     </TableCell>
                                     <TableCell>
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
                                                 <Button
-                                                    variant="ghost"
+                                                    variant="outline"
                                                     size="icon"
                                                     className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
                                                 >

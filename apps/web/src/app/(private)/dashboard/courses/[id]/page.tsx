@@ -3,6 +3,7 @@ import { Card, CardContent } from "@workspace/ui/components/card"
 import { BookOpen } from "lucide-react"
 import { LessonForm } from "../../_components/forms/lesson-form"
 import { LessonsTable } from "../../_components/tables/lessons-table"
+import { notFound } from "next/navigation"
 
 interface CourseDetailPageProps {
     params: {
@@ -11,7 +12,16 @@ interface CourseDetailPageProps {
 }
 
 export default async function CourseDetailPage({ params }: CourseDetailPageProps) {
-    const { data: lessons } = await getLessonsByCourse(params.id)
+    if (!params.id) {
+        notFound()
+    }
+    const result = await getLessonsByCourse(params.id);
+
+    if (!result.success) {
+        notFound()
+    }
+
+    const lessons = result.data;
 
     return (
         <div className="space-y-6">

@@ -1,7 +1,6 @@
 import { Course } from "@/@types/courses.type";
 import { getAllCourses } from "@/actions/courses/get-all-course";
 import { Badge } from "@workspace/ui/components/badge";
-import { Button } from "@workspace/ui/components/button";
 import { Card, CardContent } from "@workspace/ui/components/card";
 import { BookCheck, Clock4, PlayCircle } from "lucide-react";
 import Image from "next/image";

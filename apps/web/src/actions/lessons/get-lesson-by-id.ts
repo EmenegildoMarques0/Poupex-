@@ -1,4 +1,6 @@
-import type { Lesson } from "@/@types/lesson.types"
+"use server"
+
+import { Lesson } from "@/@types/lesson.types";
 import { cookies } from "next/headers";
 
 const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/v1`;
@@ -10,10 +12,10 @@ interface InvalidFindAllCourses {
 
 interface ValidFindAllCourses {
     success: true;
-    data: Lesson[]
+    data: Lesson
 }
 
-export async function getLessonsByCourse(courseId: string): Promise<InvalidFindAllCourses | ValidFindAllCourses> {
+export async function getLessonById(courseId: string, lessonId: string): Promise<InvalidFindAllCourses | ValidFindAllCourses> {
     const store = await cookies()
     const token = store.get("ppx-auth.session-token")?.value;
 
@@ -25,7 +27,7 @@ export async function getLessonsByCourse(courseId: string): Promise<InvalidFindA
         };
     }
     try {
-        const res = await fetch(`${API_URL}/courses/${courseId}/lessons`, {
+        const res = await fetch(`${API_URL}/courses/${courseId}/lessons/${lessonId}`, {
             method: "GET",
             headers: {
                 Authorization: `Bearer ${token}`,

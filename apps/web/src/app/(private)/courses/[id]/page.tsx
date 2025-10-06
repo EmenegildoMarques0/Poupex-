@@ -1,8 +1,7 @@
 import { getCourseById } from "@/actions/courses/get-course-by-id";
-import { ArrowLeft, PlayCircle, BookOpen } from "lucide-react";
+import { ArrowLeft, PlayCircle } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import Image from "next/image";
 import { CourseInfoCard } from "@/components/course/course-info-card";
 
 interface DetailsCouseProps {
