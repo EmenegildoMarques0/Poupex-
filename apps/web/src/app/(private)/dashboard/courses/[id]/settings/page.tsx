@@ -5,13 +5,14 @@ import { CourseSettingsForm } from "../../../_components/forms/course-settings-f
 import { DeleteCourseSection } from "../../../_components/forms/delete-course-section"
 
 interface CourseSettingsPageProps {
-    params: {
+    params: Promise<{
         id: string
-    }
+    }>
 }
 
 export default async function CourseSettingsPage({ params }: CourseSettingsPageProps) {
-    const course = await getCourseById(params.id)
+    const { id: courseId } = await params;
+    const course = await getCourseById(courseId)
 
     if (!course.success) {
         notFound()
@@ -34,7 +35,8 @@ export default async function CourseSettingsPage({ params }: CourseSettingsPageP
                 </CardContent>
             </Card>
 
-            <DeleteCourseSection courseId={params.id} courseTitle={course.data.title} />
+
+            <DeleteCourseSection courseId={courseId} courseTitle={course.data.title} />
         </div>
     )
 }
