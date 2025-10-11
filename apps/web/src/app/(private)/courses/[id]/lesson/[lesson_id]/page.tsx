@@ -1,33 +1,34 @@
-import { getCourseById } from "@/actions/courses/get-course-by-id"
-import { getLessonById } from "@/actions/lessons/get-lesson-by-id"
-import { Badge } from "@workspace/ui/components/badge"
-import { Button } from "@workspace/ui/components/button"
-import { Card } from "@workspace/ui/components/card"
-import { Separator } from "@workspace/ui/components/separator"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@workspace/ui/components/tabs"
-import { cn } from "@workspace/ui/lib/utils"
-import { ArrowLeft, BookOpen, ChevronLeft, ChevronRight, Download, FileText, PlayCircle } from "lucide-react"
-import Link from "next/link"
-import { notFound } from "next/navigation"
-import ReactPlayer from "react-player"
+import { getCourseById } from "@/actions/courses/get-course-by-id";
+import { getLessonById } from "@/actions/lessons/get-lesson-by-id";
+import { Badge } from "@workspace/ui/components/badge";
+import { Button } from "@workspace/ui/components/button";
+import { Card } from "@workspace/ui/components/card";
+import { Separator } from "@workspace/ui/components/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@workspace/ui/components/tabs";
+import { cn } from "@workspace/ui/lib/utils";
+import { ArrowLeft, BookOpen, ChevronLeft, ChevronRight, Download, FileText, PlayCircle } from "lucide-react";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import ReactPlayer from "react-player";
 
 interface DetailsLessonProps {
-    params: {
+    params: Promise<{
         lesson_id: string
         id: string
-    }
+    }>
     searchParams: Record<string, never>
 }
 
 export default async function DetailsLesson({ params }: DetailsLessonProps) {
-    const lesson = await getLessonById(params.id, params.lesson_id)
-    const course = await getCourseById(params.id)
+    const { id: courseId, lesson_id: lessonId } = await params;
+    const lesson = await getLessonById(courseId, lessonId);
+    const course = await getCourseById(courseId);
 
     if (!lesson.success || !course.success || !lesson.data || !course.data) {
-        notFound()
+        notFound();
     }
 
-    const currentLessonIndex = course.data.lessons?.findIndex((l) => l.id === lesson.data?.id) ?? -1
+    const currentLessonIndex = course.data.lessons?.findIndex((l) => l.id === lesson.data?.id) ?? -1;
     const previousLesson = currentLessonIndex > 0 ? course.data.lessons?.[currentLessonIndex - 1] : null;
     const nextLesson =
         currentLessonIndex < (course.data.lessons?.length ?? 0) - 1 ? course.data.lessons?.[currentLessonIndex + 1] : null;
@@ -37,7 +38,7 @@ export default async function DetailsLesson({ params }: DetailsLessonProps) {
             <header className="sticky top-0 z-10 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
                 <div className="flex h-16 items-center gap-4 px-6">
                     <Link
-                        href={`/courses/${params.id}`}
+                        href={`/courses/${courseId}`}
                         className="flex items-center gap-2 text-sm font-medium transition-colors hover:text-primary"
                     >
                         <ArrowLeft className="h-4 w-4" />
@@ -83,7 +84,7 @@ export default async function DetailsLesson({ params }: DetailsLessonProps) {
                         <div className="mb-6 flex gap-3">
                             {previousLesson ? (
                                 <Button variant="outline" asChild className="flex-1 bg-transparent">
-                                    <Link href={`/courses/${params.id}/lesson/${previousLesson.id}`}>
+                                    <Link href={`/courses/${courseId}/lesson/${previousLesson.id}`}>
                                         <ChevronLeft className="mr-2 h-4 w-4" />
                                         Aula Anterior
                                     </Link>
@@ -97,7 +98,7 @@ export default async function DetailsLesson({ params }: DetailsLessonProps) {
 
                             {nextLesson ? (
                                 <Button variant="outline" asChild className="flex-1 bg-transparent">
-                                    <Link href={`/courses/${params.id}/lesson/${nextLesson.id}`}>
+                                    <Link href={`/courses/${courseId}/lesson/${nextLesson.id}`}>
                                         Próxima Aula
                                         <ChevronRight className="ml-2 h-4 w-4" />
                                     </Link>
@@ -173,7 +174,7 @@ export default async function DetailsLesson({ params }: DetailsLessonProps) {
                                 return (
                                     <Link
                                         key={lessonItem.id}
-                                        href={`/courses/${params.id}/lesson/${lessonItem.id}`}
+                                        href={`/courses/${courseId}/lesson/${lessonItem.id}`}
                                         className={cn("block border-b p-4 transition-colors hover:bg-accent", isActive && "bg-accent")}
                                     >
                                         <div className="flex gap-3">

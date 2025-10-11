@@ -5,13 +5,12 @@ import { notFound } from "next/navigation";
 import { CourseInfoCard } from "@/components/course/course-info-card";
 
 interface DetailsCouseProps {
-    params: {
-        id: string;
-    };
+    params: Promise<{ id: string }>
 }
 
 export default async function DetailsCouse({ params }: DetailsCouseProps) {
-    const course = await getCourseById(params.id);
+    const { id: courseId } = await params;
+    const course = await getCourseById(courseId);
 
     if (!course.success) {
         notFound();
