@@ -15,15 +15,13 @@ export default async function CoursePage() {
         totalCourses = courses.data.length
     }
 
-
-    {/* <h1 className="mb-4">{totalCourses} Cursos para você! 🎉</h1> */ }
     return (<div className="space-y-6">
         <div className="flex items-center justify-between">
             <div>
                 <h1 className="text-3xl font-bold tracking-tight">Meus Cursos</h1>
                 <p className="text-muted-foreground mt-1">
                     {totalCourses > 0
-                        ? `${totalCourses} ${totalCourses === 1 ? "curso disponível" : "cursos disponíveis"} para você`
+                        ? `${totalCourses} ${totalCourses === 1 ? "curso disponível" : "cursos disponíveis"} para você! 🎉`
                         : "Nenhum curso disponível"}
                 </p>
             </div>

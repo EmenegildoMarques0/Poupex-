@@ -20,7 +20,6 @@ export default async function DetailsCouse({ params }: DetailsCouseProps) {
 
     return (
         <div className="min-h-screen w-full bg-background text-foreground">
-            {/* Header */}
             <header className="flex items-center px-4 h-16 border-b bg-card">
                 <Link
                     href="/courses"
@@ -31,12 +30,10 @@ export default async function DetailsCouse({ params }: DetailsCouseProps) {
                 </Link>
             </header>
 
-            {/* Course info */}
             <section className="px-6 py-8 max-w-6xl mx-auto">
                 <CourseInfoCard data={data} />
             </section>
 
-            {/* Lessons list */}
             <section className="px-6 pb-10 max-w-6xl mx-auto">
                 <h2 className="text-xl font-semibold mb-4">Conteúdo do curso</h2>
 

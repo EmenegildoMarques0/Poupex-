@@ -16,7 +16,6 @@ interface DetailsLessonProps {
         lesson_id: string
         id: string
     }>
-    searchParams: Record<string, never>
 }
 
 export default async function DetailsLesson({ params }: DetailsLessonProps) {

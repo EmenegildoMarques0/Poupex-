@@ -11,10 +11,18 @@ export default async function Overview() {
         <div className="space-y-8">
             <h1 className="text-xl font-bold">Overview</h1>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                <div className="min-h-24 border-4 rounded-xl">1</div>
-                <div className="min-h-24 border-4 rounded-xl">2</div>
-                <div className="min-h-24 border-4 rounded-xl">3</div>
-                <div className="min-h-24 border-4 rounded-xl">4</div>
+                <div className="min-h-24 border-4 rounded-xl flex items-center justify-center">
+                    <span>Total de alunos inscritos</span>
+                </div>
+                <div className="min-h-24 border-4 rounded-xl flex items-center justify-center">
+                    <span>Total de alunos recentes</span>
+                </div>
+                <div className="min-h-24 border-4 rounded-xl flex items-center justify-center">
+                    <span>Total de cursos</span>
+                </div>
+                <div className="min-h-24 border-4 rounded-xl flex items-center justify-center">
+                    <span>Total de cursos recentes</span>
+                </div>
             </div>
 
             <Card>
