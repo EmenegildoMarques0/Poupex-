@@ -1,22 +1,16 @@
 {
   "name": "poupex",
-  "version": "0.0.1",
-  "private": true,
+  "version": "1.0.0",
+  "description": " Poupex é um aplicativo web para controle de gastos pessoais, permitindo registrar despesas diárias e visualizar estatísticas semanais e mensais.",
   "scripts": {
-    "build": "turbo build --no-lint",
-    "dev": "turbo dev",
-    "lint": "turbo lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "server:dev": "cd apps/server && php artisan serve",
+    "web:dev": "cd apps/web && pnpm dev",
+    "dev": "concurrently \"pnpm server:dev\" \"pnpm web:dev\""
   },
+  "keywords": [],
+  "license": "ISC",
+  "packageManager": "pnpm@10.12.3",
   "devDependencies": {
-    "@workspace/eslint-config": "workspace:*",
-    "@workspace/typescript-config": "workspace:*",
-    "prettier": "^3.6.2",
-    "turbo": "^2.5.5",
-    "typescript": "5.7.3"
-  },
-  "packageManager": "pnpm@10.4.1",
-  "engines": {
-    "node": ">=20"
+    "concurrently": "^9.2.1"
   }
 }

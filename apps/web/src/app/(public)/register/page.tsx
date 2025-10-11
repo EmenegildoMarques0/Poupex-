@@ -1,8 +1,8 @@
-import { RegisterUserForm } from "@/components/forms/register-user-form";
+import { RegisterUserForm } from "@/components/forms/auth/register-user-form";
 import Link from "next/link";
 
 export default function RegisterPage() {
-  return (
+    return (
         <main className="h-screen flex flex-col gap-6 md:flex-row-reverse">
             <div className="flex-1 flex items-center justify-center px-6">
                 <div className="flex flex-col gap-6 max-w-md w-full">
@@ -17,7 +17,7 @@ export default function RegisterPage() {
                     </div>
 
                     <RegisterUserForm />
-                    
+
                     <p className="text-sm text-neutral-500 text-center">
                         Já tem uma conta?{" "}
                         <Link href="/sign-in" className="text-primary font-medium hover:underline">

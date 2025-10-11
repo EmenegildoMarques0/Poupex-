@@ -1,4 +1,4 @@
-import { SignInForm } from "@/components/forms/sign-in-form";
+import { SignInForm } from "@/components/forms/auth/sign-in-form";
 import Link from "next/link";
 
 export default function SignInPage() {
@@ -25,5 +25,5 @@ export default function SignInPage() {
                 </div>
             </div>
         </main>
-    );
+    )
 }
