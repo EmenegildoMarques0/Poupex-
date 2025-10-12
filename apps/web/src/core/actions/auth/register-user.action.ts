@@ -1,7 +1,6 @@
 "use server"
 
 import { registerUserSchema, RegisterUserSchemaValues } from "@/core/schemas/auth/register-user.schema";
-import { SignInSchemaValues } from "@/core/schemas/auth/sign-in.schema";
 import { ApiResponse, ResponseMapper } from "@/core/schemas/default.meppers";
 import { env } from "@/lib/env";
 
