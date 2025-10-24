@@ -12,8 +12,5 @@
   "packageManager": "pnpm@10.12.3",
   "devDependencies": {
     "concurrently": "^9.2.1"
-  },
-  "dependencies": {
-    "swr": "^2.3.6"
   }
 }
