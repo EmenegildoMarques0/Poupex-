@@ -21,30 +21,28 @@ export async function createCourseLessonAction(data: CreateLessonSchemaValues & 
     formData.append("description", parsed.data.description || "");
     formData.append("link", parsed.data.link);
     formData.append("order", String(parsed.data.order));
-    //formData.append("is_public", data.is_public);
-    //formData.append("thumbnail", file);
 
     try {
-         const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/v1`;
+        const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/v1`;
 
-            const response = await fetch(`${API_URL}/courses/${data.courseId}/lessons`, {
-                method: "POST",
-                headers: {
-                    Accept: "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: formData,
-            });
+        const response = await fetch(`${API_URL}/courses/${data.courseId}/lessons`, {
+            method: "POST",
+            headers: {
+                Accept: "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: formData,
+        });
 
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(errorText || "Falha ao criar curso");
-            }
-
-            revalidateTag("get-course");
-            return ResponseMapper.success(response.ok);
-        } catch (error) {
-            console.error("❌ Erro ao criar curso:", error);
-            return ResponseMapper.error("Erro ao criar o curso. Verifique os dados e tente novamente.");
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(errorText || "Falha ao criar curso");
         }
+
+        revalidateTag("get-course");
+        return ResponseMapper.success(response.ok);
+    } catch (error) {
+        console.error("❌ Erro ao criar curso:", error);
+        return ResponseMapper.error("Erro ao criar o curso. Verifique os dados e tente novamente.");
+    }
 }

@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { DialogClose, DialogFooter } from "@/components/ui/dialog";
@@ -25,12 +25,12 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { toast } from "sonner";
+
 import { type CreateCourseSchemaValues, createCourseSchema } from "@/core/schemas/course";
 import { course } from "@/core/actions/course";
 
 export function CourseForm() {
-    const [file, setFile] = useState<File | null>(null);
+    // const [file, setFile] = useState<File | null>(null);
 
     const form = useForm<CreateCourseSchemaValues>({
         resolver: zodResolver(createCourseSchema),
@@ -43,20 +43,26 @@ export function CourseForm() {
     });
 
     const onSubmit = async (data: CreateCourseSchemaValues) => {
-        if (!file) {
+        /* if (!file) {
             toast.error("Selecione uma imagem para o curso.");
             return;
-        }
+        } */
 
-        const result = await course.create({ file, ...data });
+        const result = await course.create({
+            title: data.title,
+            description: data.description,
+            is_public: data.is_public,
+            level: data.level,
+        });
+
         if (!result.success) {
             toast.error(result.error);
             return;
         }
 
         toast.success(result.message);
+        form.reset(); // limpa os campos após sucesso
     };
-
 
     return (
         <Form {...form}>
@@ -68,7 +74,7 @@ export function CourseForm() {
                     control={form.control}
                     name="title"
                     render={({ field }) => (
-                        <FormItem className="md:col-span-2">
+                        <FormItem className="md:col-span-2 space-y-2">
                             <FormLabel>Título</FormLabel>
                             <Input
                                 type="text"
@@ -84,7 +90,7 @@ export function CourseForm() {
                     control={form.control}
                     name="level"
                     render={({ field }) => (
-                        <FormItem>
+                        <FormItem className="space-y-2">
                             <FormLabel>Nível</FormLabel>
                             <Select onValueChange={field.onChange} value={field.value}>
                                 <FormControl>
@@ -106,11 +112,11 @@ export function CourseForm() {
                     )}
                 />
 
-                {/* <FormField
+                <FormField
                     control={form.control}
                     name="is_public"
                     render={({ field }) => (
-                        <FormItem>
+                        <FormItem className="space-y-2">
                             <FormLabel>Visibilidade</FormLabel>
                             <Select onValueChange={field.onChange} value={field.value}>
                                 <FormControl>
@@ -129,9 +135,10 @@ export function CourseForm() {
                             <FormMessage />
                         </FormItem>
                     )}
-                /> */}
+                />
 
-                <FormItem className="md:col-span-2">
+                {/* 
+                <FormItem className="md:col-span-2 space-y-2">
                     <FormLabel>Thumbnail</FormLabel>
                     <Input
                         type="file"
@@ -142,12 +149,13 @@ export function CourseForm() {
                         <p className="text-xs text-neutral-500 mt-1 truncate">{file.name}</p>
                     )}
                 </FormItem>
+                */}
 
                 <FormField
                     control={form.control}
                     name="description"
                     render={({ field }) => (
-                        <FormItem className="md:col-span-2">
+                        <FormItem className="md:col-span-2 space-y-2">
                             <div className="flex items-center justify-between">
                                 <FormLabel>Descrição</FormLabel>
                                 <span className="text-xs text-muted-foreground">
@@ -165,12 +173,12 @@ export function CourseForm() {
                     )}
                 />
 
-                <DialogFooter className="col-span-2 flex gap-2 justify-end">
+                <DialogFooter className="col-span-2 flex gap-2 justify-end mt-2">
                     <DialogClose asChild>
                         <Button variant="destructive">Fechar</Button>
                     </DialogClose>
                     <Button type="submit" disabled={form.formState.isSubmitting}>
-                        {form.formState.isSubmitting ? "Adicionando..." : "Adicionar"}
+                        {form.formState.isSubmitting ? "Salvando..." : "Salvar"}
                     </Button>
                 </DialogFooter>
             </form>

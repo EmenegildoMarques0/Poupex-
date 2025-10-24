@@ -1,6 +1,6 @@
 
 import { LessonForm } from "@/components/forms/course/lesson-form";
-import { LessonsTable } from "@/components/tables/course/lesson-table";
+import { TableListLessonCourse } from "@/components/tables/course/lesson";
 import { Card, CardContent } from "@/components/ui/card";
 import { course } from "@/core/actions/course";
 import { BookOpen } from "lucide-react";
@@ -45,7 +45,7 @@ export default async function DetailCoursePage({ params }: DetailCoursePageProps
                     </CardContent>
                 </Card>
             ) : (
-                    <LessonsTable courseId={courseId.id} lessons={lessons} />
+                <TableListLessonCourse data={lessons} />
             )}
         </div>
     )

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Criar Curso e Aula</title>
+</head>
+
+<body>
+    <!-- Formulário para criar curso -->
+    <form id="myForm" enctype="multipart/form-data">
+        <div>
+            <label for="course_thumbnail">Capa (arquivo)</label><br />
+            <input type="file" id="course_thumbnail" name="thumbnail" accept="image/*" />
+        </div>
+        <div>
+            <label for="course_title">Título</label><br />
+            <input type="text" id="course_title" name="title" required />
+        </div>
+        <div>
+            <label for="course_description">Descrição</label><br />
+            <textarea name="description" id="course_description" required></textarea>
+        </div>
+        <div>
+            <label for="is_public">É público?</label><br />
+            <input type="checkbox" name="is_public" id="is_public" />
+        </div>
+        <div>
+            <label for="level">Nível do curso</label><br />
+            <select name="level" id="level" required>
+                <option value="beginner">Beginner</option>
+                <option value="intermediate">Intermediate</option>
+                <option value="advanced">Advanced</option>
+            </select>
+        </div>
+        <br /><br />
+        <button type="submit">Criar Curso</button>
+    </form>
+
+    <br><br><br>
+
+    <!-- Formulário para criar aula -->
+    <form id="myFormLesson" enctype="multipart/form-data">
+        <div>
+            <label for="course_id">Curso</label><br />
+            <select name="course_id" id="course_id" required>
+                <option value="">Selecione um curso</option>
+                <!-- Cursos serão preenchidos dinamicamente via JavaScript -->
+            </select>
+        </div>
+        <div>
+            <label for="lesson_title">Título</label><br />
+            <input type="text" id="lesson_title" name="title" required />
+        </div>
+        <div>
+            <label for="link">Link da aula (YouTube)</label><br />
+            <input type="url" id="link" name="link" required />
+        </div>
+        <div>
+            <label for="lesson_description">Descrição</label><br />
+            <textarea name="description" id="lesson_description"></textarea>
+        </div>
+        <div>
+            <label for="order">Ordem do material (inteiro)</label><br />
+            <input type="number" name="order" id="order" min="0" />
+        </div>
+        <div>
+            <label for="supporting_materials">Materiais (arquivos)</label><br />
+            <input type="file" id="supporting_materials" name="supporting_materials" multiple />
+        </div>
+        <br /><br />
+        <button type="submit">Criar Aula</button>
+    </form>
+
+    <br><br><br>
+
+    <!-- Lista de cursos (placeholder) -->
+    <div id="course_list"></div>
+
+    <script>
+        const BASE_URL = "https://poupex-api.onrender.com/api/v1";
+        const TOKEN = "Bearer 19|iagS1qE78LQ96FiyRMilkwi520LOZEusjqmdlvIzfd973d07";
+
+        // Função para carregar cursos no dropdown
+        async function loadCourses() {
+            try {
+                const response = await fetch(`${BASE_URL}/courses`, {
+                    method: "GET",
+                    headers: { Authorization: TOKEN },
+                });
+                const result = await response.json();
+                if (!response.ok) throw new Error(result.message || "Erro ao carregar cursos");
+
+                const courseSelect = document.getElementById("course_id");
+                courseSelect.innerHTML = '<option value="">Selecione um curso</option>';
+                result.forEach(course => {
+                    const option = document.createElement("option");
+                    option.value = course.id;
+                    option.textContent = course.title;
+                    courseSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error("⚠️ Erro ao carregar cursos:", error);
+                alert("Erro ao carregar cursos. Verifique o console.");
+            }
+        }
+
+        // Formulário de criação de curso
+        const courseForm = document.getElementById("myForm");
+        courseForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const formData = new FormData();
+            const thumbnail = document.getElementById("course_thumbnail").files[0];
+            const title = document.getElementById("course_title").value.trim();
+            const description = document.getElementById("course_description").value.trim();
+            const is_public = document.getElementById("is_public").checked;
+            const level = document.getElementById("level").value;
+
+            if (thumbnail) formData.append("thumbnail", thumbnail);
+            formData.append("title", title);
+            formData.append("description", description);
+            formData.append("is_public", is_public);
+            formData.append("level", level);
+
+            console.log("📦 Enviando FormData (Curso)...");
+            for (let [key, val] of formData.entries()) {
+                console.log(`${key}:`, val);
+            }
+
+            try {
+                const response = await fetch(`${BASE_URL}/courses`, {
+                    method: "POST",
+                    headers: { Authorization: TOKEN },
+                    body: formData,
+                });
+
+                const result = await response.json();
+                if (!response.ok) {
+                    console.error("❌ Erro da API:", result);
+                    throw new Error(result.message || `Erro HTTP: ${response.status}`);
+                }
+
+                alert("✅ Curso criado com sucesso!");
+                console.log("Resposta da API:", result);
+                courseForm.reset();
+                loadCourses(); // Atualiza a lista de cursos no dropdown
+            } catch (error) {
+                console.error("⚠️ Erro ao enviar curso:", error);
+                alert("Erro ao criar o curso. Verifique o console.");
+            }
+        });
+
+        // Formulário de criação de aula
+        const lessonForm = document.getElementById("myFormLesson");
+        lessonForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const courseId = document.getElementById("course_id").value;
+            const formData = new FormData();
+            const title = document.getElementById("lesson_title").value.trim();
+            const link = document.getElementById("link").value.trim();
+            const description = document.getElementById("lesson_description").value.trim();
+            const order = document.getElementById("order").value;
+            const supportingMaterials = document.getElementById("supporting_materials").files;
+
+            formData.append("title", title);
+            formData.append("link", link);
+            if (description) formData.append("description", description);
+            if (order) formData.append("order", order);
+            for (let file of supportingMaterials) {
+                formData.append("supporting_materials[]", file);
+            }
+
+            console.log("📦 Enviando FormData (Aula)...");
+            for (let [key, val] of formData.entries()) {
+                console.log(`${key}:`, val);
+            }
+
+            try {
+                const response = await fetch(`${BASE_URL}/courses/${courseId}/lessons`, {
+                    method: "POST",
+                    headers: { Authorization: TOKEN, "Content-Type": "application/json" },
+                    body: JSON.stringify({ title, description, link, order }),
+                });
+
+                const result = await response.json();
+                if (!response.ok) {
+                    console.error("❌ Erro da API:", result);
+                    throw new Error(result.message || `Erro HTTP: ${response.status}`);
+                }
+
+                alert("✅ Aula criada com sucesso!");
+                console.log("Resposta da API:", result);
+                lessonForm.reset();
+            } catch (error) {
+                console.error("⚠️ Erro ao enviar aula:", error);
+                alert("Erro ao criar a aula. Verifique o console.");
+            }
+        });
+
+        // Carrega cursos ao carregar a página
+        window.onload = loadCourses;
+    </script>
+</body>
+
+</html>
