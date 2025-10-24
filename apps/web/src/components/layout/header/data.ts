@@ -38,6 +38,11 @@ export const NAV_LINKS_DASH = [
     },
     {
         id: "2",
+        href: "/dashboard/users",
+        label: "Usuários"
+    },
+    {
+        id: "3",
         href: "/dashboard/courses",
         label: "Cursos"
     },

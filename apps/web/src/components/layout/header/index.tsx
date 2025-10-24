@@ -59,7 +59,7 @@ export function Header({ data: session }: { data: User }) {
 							<SearchCorseInput />
 						</div>
 					)}
-					<HeaderAddCost />
+					{!pathname.includes("dashboard") && <HeaderAddCost />}
 
 					{session ? (
 						<HeaderUserMenu user={session} />
