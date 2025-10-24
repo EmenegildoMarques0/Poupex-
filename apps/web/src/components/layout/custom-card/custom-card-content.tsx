@@ -1,7 +1,7 @@
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Info } from "lucide-react";
 import { memo } from "react";

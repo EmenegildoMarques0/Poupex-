@@ -64,7 +64,7 @@ export default async function CoursePage() {
                                 </div>
                             </div>
                             <CardFooter className="p-4">
-                                <Button asChild className="w-full border border-muted-foreground hover:text-accent-foreground hover:bg-transparent dark:hover:bg-transparent">
+                                <Button asChild className="w-full text-white">
                                     <Link href={`/courses/${course.id}`}>Vamos começar</Link>
                                 </Button>
                             </CardFooter>

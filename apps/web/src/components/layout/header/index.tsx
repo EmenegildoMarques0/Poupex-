@@ -1,10 +1,9 @@
 "use client";
 import { Menu, X } from "lucide-react";
-import { redirect, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useSession } from "@/core/actions/auth/session/client";
 import { NAV_LINKS_CLIENT_MOBLE, NAV_LINKS_DASH_MOBLE } from "./data";
 import { HeaderAddCost } from "./header-add-cost";
 import { HeaderCourseSelector } from "./header-course-selector";
@@ -13,14 +12,9 @@ import { HeaderMobileMenu } from "./header-mobile-menu";
 import { SearchCorseInput } from "./header-mobile-menu/search-corse-input";
 import { HeaderNavigation } from "./header-navigation";
 import { HeaderUserMenu } from "./header-user-menu";
+import { User } from "@/core/schemas/user";
 
-export function Header() {
-	const session = useSession();
-
-	if (session.error) {
-		redirect("/sign-in");
-	}
-
+export function Header({ data: session }: { data: User }) {
 	const pathname = usePathname();
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -67,8 +61,8 @@ export function Header() {
 					)}
 					<HeaderAddCost />
 
-					{session.user ? (
-						<HeaderUserMenu user={session.user} />
+					{session ? (
+						<HeaderUserMenu user={session} />
 					) : (
 						<Skeleton className="w-10 h-10 rounded-full border" />
 					)}

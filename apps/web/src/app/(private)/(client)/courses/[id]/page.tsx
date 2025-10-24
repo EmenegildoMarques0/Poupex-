@@ -20,7 +20,7 @@ export default async function DetailsCouse({ params }: DetailsCouseProps) {
 
     return (
         <div className="min-h-screen w-full bg-background text-foreground">
-            <header className="flex items-center px-4 h-16 border-b bg-card">
+            <header className="flex items-center px-4 h-16 ">
                 <Link
                     href="/courses"
                     className="flex items-center gap-2 hover:underline"
@@ -46,11 +46,11 @@ export default async function DetailsCouse({ params }: DetailsCouseProps) {
                                 className="group flex items-center justify-between p-4 rounded-lg border hover:bg-muted transition"
                             >
                                 <div className="flex items-center gap-3">
-                                    <div className="flex size-8 items-center justify-center rounded-full bg-primary/10 text-primary">
+                                    <div className="flex size-8 min-w-8 min-h-8 items-center justify-center rounded-full bg-primary/10 text-primary">
                                         <PlayCircle className="size-5" />
                                     </div>
                                     <div>
-                                        <h3 className="font-medium group-hover:text-primary transition">
+                                        <h3 className="font-medium group-hover:text-primary transition line-clamp-2">
                                             {index + 1}. {lesson.title}
                                         </h3>
                                         <p className="text-sm text-muted-foreground line-clamp-1">

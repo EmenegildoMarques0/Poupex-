@@ -100,7 +100,7 @@ export default async function CoursePageDashbaord() {
 
 								<Dialog>
 									<DialogTrigger asChild>
-										<Button>Adicionar Curso</Button>
+										<Button className="text-white">Adicionar Curso</Button>
 									</DialogTrigger>
 									<DialogContent>
 										<DialogHeader>
