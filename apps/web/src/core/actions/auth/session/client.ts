@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { parseCookies } from "nookies";
+import { useEffect, useState } from "react";
 import type { User } from "@/core/schemas/user";
 
 export function useSession() {
@@ -23,7 +23,6 @@ export function useSession() {
 					return;
 				}
 
-
 				const API_URL = process.env.NEXT_PUBLIC_API_URL;
 				const res = await fetch(`${API_URL}/api/v1/auth/token-verify`, {
 					headers: {
@@ -33,15 +32,19 @@ export function useSession() {
 				});
 
 				if (!res.ok) {
-					throw new Error(`Erro ${res.status}: falha na verificação do token`);
+					throw new Error(
+						`Erro ${res.status}: falha na verificação do token`,
+					);
 				}
 
 				const data = await res.json();
 				setUser(data.user);
-			} catch (err: any) {
-				if (err.name !== "AbortError") {
-					console.error("Falha ao carregar sessão:", err);
-					setError(err.message || "Erro desconhecido.");
+			} catch (err) {
+				if (err instanceof Error) {
+					if (err.name !== "AbortError") {
+						console.error("Falha ao carregar sessão:", err);
+						setError(err.message || "Erro desconhecido.");
+					}
 				}
 			} finally {
 				setLoading(false);

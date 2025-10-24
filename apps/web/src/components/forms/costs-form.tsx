@@ -1,37 +1,42 @@
 "use client";
 
+import { format } from "date-fns";
+import { useForm } from "react-hook-form";
+import { Button } from "@/components/ui/button";
+import { DialogClose, DialogFooter } from "@/components/ui/dialog";
 import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+	Form,
+	FormControl,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useForm } from "react-hook-form";
-import { DialogClose, DialogFooter } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import {
+	Select,
+	SelectContent,
+	SelectGroup,
+	SelectItem,
+	SelectLabel,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import type { RegisterCostFormValues } from "@/core/schemas/costs/register-costs.schema";
 import { formatCurrency } from "@/lib/formats/format-currency";
-import { format } from "date-fns";
-import { RegisterCostFormValues } from "@/core/schemas/costs/register-costs.schema";
 
 interface CostsFormProps {
-  defaultValues?: Partial<RegisterCostFormValues & { id?: string }>;
-  onSubmit: (data: RegisterCostFormValues & { id?: string }) => void;
+	defaultValues?: Partial<RegisterCostFormValues & { id?: string }>;
+	onSubmit: (data: RegisterCostFormValues & { id?: string }) => void;
+	buttonValue?: string;
 }
 
-export function CostsForm({ defaultValues, onSubmit }: CostsFormProps) {
+export function CostsForm({
+	defaultValues,
+	onSubmit,
+	buttonValue = "Guardar",
+}: CostsFormProps) {
 	const form = useForm<RegisterCostFormValues>({
 		mode: "all",
 		criteriaMode: "firstError",
@@ -45,9 +50,9 @@ export function CostsForm({ defaultValues, onSubmit }: CostsFormProps) {
 	});
 
 	const onSubmitInternal = async (formData: RegisterCostFormValues) => {
-		onSubmit(formData)
+		onSubmit(formData);
 		form.reset();
-	}
+	};
 
 	return (
 		<Form {...form}>
@@ -61,22 +66,37 @@ export function CostsForm({ defaultValues, onSubmit }: CostsFormProps) {
 					render={({ field }) => (
 						<FormItem className="md:col-span-1 col-span-2">
 							<FormLabel>Categoria</FormLabel>
-							<Select onValueChange={field.onChange} value={field.value}>
+							<Select
+								onValueChange={field.onChange}
+								value={field.value}
+							>
 								<FormControl>
-								<SelectTrigger className="w-full">
-									<SelectValue placeholder="Selecione uma categoria" />
-								</SelectTrigger>
+									<SelectTrigger className="w-full">
+										<SelectValue placeholder="Selecione uma categoria" />
+									</SelectTrigger>
 								</FormControl>
 								<SelectContent>
-								<SelectGroup>
-									<SelectLabel>Categorias</SelectLabel>
-									<SelectItem value="Alimentação">Alimentação</SelectItem>
-									<SelectItem value="Transporte">Transporte</SelectItem>
-									<SelectItem value="Lazer">Lazer</SelectItem>
-									<SelectItem value="Moradia">Moradia</SelectItem>
-									<SelectItem value="Saúde">Saúde</SelectItem>
-									<SelectItem value="Outros">Outros</SelectItem>
-								</SelectGroup>
+									<SelectGroup>
+										<SelectLabel>Categorias</SelectLabel>
+										<SelectItem value="Alimentação">
+											Alimentação
+										</SelectItem>
+										<SelectItem value="Transporte">
+											Transporte
+										</SelectItem>
+										<SelectItem value="Lazer">
+											Lazer
+										</SelectItem>
+										<SelectItem value="Moradia">
+											Moradia
+										</SelectItem>
+										<SelectItem value="Saúde">
+											Saúde
+										</SelectItem>
+										<SelectItem value="Outros">
+											Outros
+										</SelectItem>
+									</SelectGroup>
 								</SelectContent>
 							</Select>
 							<FormMessage />
@@ -89,13 +109,13 @@ export function CostsForm({ defaultValues, onSubmit }: CostsFormProps) {
 					name="data"
 					render={({ field }) => (
 						<FormItem className="md:col-span-1 col-span-2">
-						<FormLabel>Data</FormLabel>
-						<Input
-							type="date"
-							max={format(new Date(), "yyyy-MM-dd")}
-							{...field}
-						/>
-						<FormMessage />
+							<FormLabel>Data</FormLabel>
+							<Input
+								type="date"
+								max={format(new Date(), "yyyy-MM-dd")}
+								{...field}
+							/>
+							<FormMessage />
 						</FormItem>
 					)}
 				/>
@@ -106,8 +126,14 @@ export function CostsForm({ defaultValues, onSubmit }: CostsFormProps) {
 					render={({ field }) => (
 						<FormItem className="col-span-2">
 							<FormLabel>Valor (Kz)</FormLabel>
-							<Input type="number" placeholder="Montante Gasto" {...field} />
-							<p className="text-sm ml-2 text-neutral-500">{formatCurrency(field.value)}</p>
+							<Input
+								type="number"
+								placeholder="Montante Gasto"
+								{...field}
+							/>
+							<p className="text-sm ml-2 text-neutral-500">
+								{formatCurrency(field.value)}
+							</p>
 							<FormMessage />
 						</FormItem>
 					)}
@@ -121,7 +147,7 @@ export function CostsForm({ defaultValues, onSubmit }: CostsFormProps) {
 							<div className="flex items-center justify-between">
 								<FormLabel>Descrição</FormLabel>
 								<span className="text-xs text-neutral-500">
-								{field.value?.length || 0} de 255 caracteres
+									{field.value?.length || 0} de 255 caracteres
 								</span>
 							</div>
 							<Textarea
@@ -137,15 +163,15 @@ export function CostsForm({ defaultValues, onSubmit }: CostsFormProps) {
 
 				<DialogFooter className="col-span-2 mt-4 gap-3 justify-end">
 					<DialogClose asChild>
-						<Button type="button" variant="destructive">
+						<Button type="button" variant="outline">
 							Cancelar
 						</Button>
 					</DialogClose>
-					<Button type="submit" variant="outline">
-						Guardar
+					<Button type="submit" className="text-white">
+						{buttonValue}
 					</Button>
 				</DialogFooter>
 			</form>
 		</Form>
-  	);
+	);
 }
