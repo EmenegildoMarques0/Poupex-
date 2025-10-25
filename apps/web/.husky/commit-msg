@@ -1,0 +1,5 @@
+echo "Running commit msg hooks (Conventional commit)..."
+#!/bin/sh
+pnpm dlx commitlint --edit "$1"
+
+echo "Done."

@@ -22,4 +22,13 @@ export const createCourseSchema = z.object({
     description: z.string().max(255, "Máx. 255 caracteres").optional(),
 });
 
+export const updateCourseSchema = z.object({
+    title: z.string().min(3, "O título é obrigatório"),
+    level: z.enum(["beginner", "intermediate", "advanced"]),
+    is_public: z.enum(["public", "private"]),
+    description: z.string().max(255, "Máx. 255 caracteres").optional(),
+    thumbnail: z.url(),
+});
+
 export type CreateCourseSchemaValues = z.infer<typeof createCourseSchema>;
+export type UpdateCourseSchemaValues = z.infer<typeof updateCourseSchema>;

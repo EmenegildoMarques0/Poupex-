@@ -19,6 +19,7 @@ import { Label } from "@/components/ui/label"
 import { Trash2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
+import { course } from "@/core/actions/course"
 
 interface DeleteCourseSectionProps {
     courseId: string
@@ -37,14 +38,18 @@ export function DeleteCourseSection({ courseId, courseTitle }: DeleteCourseSecti
 
         setIsDeleting(true)
 
-        // TODO: Implement delete course action
-        await new Promise((resolve) => setTimeout(resolve, 1000))
+        const result = await course.delete(courseId);
 
-        toast.error("Curso excluído", {
-            description: "O curso foi excluído permanentemente."
-        })
+        if (!result.success) {
+            toast.error(result.error ?? "Curso excluído", {
+                description: "O curso foi excluído permanentemente."
+            });
+            return;
+        }
 
-        router.push("/overview")
+        toast.success(result.message)
+
+        router.push("/");
     }
 
     return (

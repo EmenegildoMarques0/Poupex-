@@ -51,7 +51,7 @@ export function CourseManagementSidebar({ courseId }: CourseManagementSidebarPro
                             className={cn(
                                 "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
                                 isActive
-                                    ? "bg-primary text-primary-foreground"
+                                    ? "bg-primary text-white"
                                     : "text-muted-foreground hover:bg-muted hover:text-foreground",
                             )}
                         >

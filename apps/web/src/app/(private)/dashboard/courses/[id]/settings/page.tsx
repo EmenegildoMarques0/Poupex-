@@ -46,7 +46,7 @@ export default async function CourseSettingsPage({
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<CourseSettingsForm course={c.data} />
+					<CourseSettingsForm defaultValues={c.data} />
 				</CardContent>
 			</Card>
 

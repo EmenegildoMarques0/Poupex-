@@ -66,11 +66,10 @@ export default async function CoursePageDashbaord() {
 					</div>
 				</CardContent>
 			</Card>
-			<pre>{JSON.stringify(courses, null, 2)}</pre>
 			<section className="flex items-end justify-between w-full">
 				<div className="flex items-center gap-4">
 					<div className="size-12 flex items-center justify-center bg-primary text-white rounded-lg">
-						<BookHeadphones className="text-background" />
+						<BookHeadphones className="text-blue-200" />
 					</div>
 					<Separator orientation="vertical" className="min-h-10" />
 					<div>

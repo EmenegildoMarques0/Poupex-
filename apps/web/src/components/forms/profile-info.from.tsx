@@ -52,7 +52,7 @@ export function ProfileInfoForm({ defaultValues }: ProfileInfoFormProps) {
                             </FormItem>
                         )}
                     />
-            
+
                     <FormField
                         name="email"
                         control={form.control}
@@ -76,7 +76,7 @@ export function ProfileInfoForm({ defaultValues }: ProfileInfoFormProps) {
 
                 <p className="text-xs tracking-wide text-muted-foreground font-bold">Nota: Email não pode ser alterado</p>
 
-                <Button type="submit" disabled={form.formState.isSubmitting || isValid}>
+                <Button type="submit" disabled={form.formState.isSubmitting || isValid} className="text-white">
                     {form.formState.isSubmitting ? (
                         <LoaderWidget label="Salvando" />
                     ) : (
@@ -86,13 +86,13 @@ export function ProfileInfoForm({ defaultValues }: ProfileInfoFormProps) {
                         </>
                     )}
                 </Button>
-                <Button 
-                    type="button" 
-                    variant="outline" 
-                    size="icon" 
+                <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
                     disabled={isValid}
                     title="Restaurar os dados padrão do usuário"
-                    className="ml-2" 
+                    className="ml-2"
                     onClick={() => {
                         form.setValue("name", defaultValues.name)
                     }}

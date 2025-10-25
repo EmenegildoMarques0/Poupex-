@@ -1,0 +1,6 @@
+echo "Running pre-commit hooks (Biome Check)..."
+pnpm run lint || (
+  echo "Biome check failed. Please fix the issues before committing." && exit 1
+)
+
+echo "Done."

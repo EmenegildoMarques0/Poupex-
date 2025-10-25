@@ -89,7 +89,7 @@ export const SignInForm = () => {
                 <Button
                     type="submit"
                     disabled={form.formState.isSubmitting}
-                    className="w-full"
+                    className="w-full text-white"
                 >
                     {form.formState.isSubmitting ? (
                         <LoaderWidget label="Entrando" />
